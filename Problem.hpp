@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <iostream>
 #include "Solution.hpp"
-#include "config.h"
 
 using namespace std;
 

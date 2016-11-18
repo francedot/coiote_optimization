@@ -1,1 +1,0 @@
-# coiote_optimization

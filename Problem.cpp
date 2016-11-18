@@ -7,3 +7,16 @@
 //
 
 #include "Problem.hpp"
+
+
+int Problem::load() {
+    return 0;
+}
+
+Problem::Problem(string inputPath, string outputPath) {
+
+}
+
+void Problem::writeSolution(bool printScreen) {
+
+}
