@@ -1,10 +1,6 @@
-//
-//  Loader.hpp
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 18/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * Loader.hpp
+ */
 
 #ifndef Loader_hpp
 #define Loader_hpp

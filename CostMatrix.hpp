@@ -1,10 +1,6 @@
-//
-//  CostMatrix.hpp
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 17/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * CostMatrix.hpp
+ */
 
 #ifndef CostMatrix_hpp
 #define CostMatrix_hpp
@@ -15,16 +11,29 @@
 using namespace std;
 
 class CostMatrix {
-public:
+    public:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        CostMatrix(int dim);
 
-    CostMatrix(int dim);
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int loadMatrix(ifstream inputFile);
+        // TODO check why it makes the build fail
 
-    int loadMatrix(ifstream inputFile);
 
+    private:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int dim;
 
-private:
-    int dim;
-    int **costs;
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int **costs;
 };
 
 #endif /* CostMatrix_hpp */

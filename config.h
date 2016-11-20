@@ -1,15 +1,18 @@
-//
-//  config.h
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 18/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * config.h
+ */
 
 #ifndef config_h
 #define config_h
 
+/*
+ * TODO WRITE DESCRIPTION HERE
+ */
 int populationSize;
+
+/*
+ * TODO WRITE DESCRIPTION HERE
+ */
 int eliteSize;
 
 #endif /* config_h */

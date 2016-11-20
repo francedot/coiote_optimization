@@ -1,9 +1,26 @@
-//
-//  Solution.cpp
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 18/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * Solution.cpp
+ */
 
 #include "Solution.hpp"
+
+/*
+ * TODO WRITE DESCRIPTION HERE
+ */
+Solution::Solution() {
+
+}
+
+/*
+ * TODO WRITE DESCRIPTION HERE
+ */
+Solution::Solution(Solution *initialSolution, int n) {
+
+}
+
+/*
+ * TODO WRITE DESCRIPTION HERE
+ */
+SolutionCell *Solution::generateNeighborhood() {
+    return nullptr;
+}

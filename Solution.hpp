@@ -1,10 +1,6 @@
-//
-//  Solution.hpp
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 18/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * Solution.hpp
+ */
 
 #ifndef Solution_hpp
 #define Solution_hpp
@@ -16,14 +12,28 @@
 using namespace std;
 
 class Solution {
-public:
-    Solution();
+    public:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        Solution();
 
-    Solution(Solution *initialSolution, int n); //TODO: documentation (n = number of cells invariant)
-    SolutionCell *generateNeighborhood();
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        Solution(Solution *initialSolution, int n);
+        //TODO: documentation (n = number of cells invariant)
 
-private:
-    vector<SolutionCell> cells;
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        SolutionCell *generateNeighborhood();
+
+    private:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        vector<SolutionCell> cells;
 };
 
 #endif /* Solution_hpp */

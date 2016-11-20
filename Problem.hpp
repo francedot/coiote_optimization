@@ -1,10 +1,6 @@
-//
-//  ProblemData.hpp
-//  ProvaOpt
-//
-//  Created by Gabriele Mosca on 17/11/16.
-//  Copyright © 2016 Gabriele Mosca. All rights reserved.
-//
+/*
+ * Problem.hpp
+ */
 
 #ifndef Problem_hpp
 #define Problem_hpp
@@ -16,29 +12,76 @@
 using namespace std;
 
 class Problem {
-public:
-    Problem(string inputPath, string outputPath);
+    public:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        Problem(string inputPath, string outputPath);
 
-    int load();
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int load();
 
-    void writeSolution(bool printScreen);
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        void writeSolution(bool printScreen);
 
-    int
-    solve(Solution *finalSolution);                                 //generate initial solution and solve the problem running innerSolve
-private:
+        /*
+         * generate initial solution and solve the problem running innerSolve
+         */
+        int solve(Solution *finalSolution);
 
-    int innerSolve(Solution *initialSolution, Solution *finalSolution); //uses the heuristic
-    Solution *generateInitialSolution();
+    private:
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        string inputPath;
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        string outputPath;
 
-    string inputPath;
-    string outputPath;
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int cellsNumber;
 
-    Solution *population;
-    int cellsNumber;
-    int usersTypeNumber;
-    int timesNumber;
-    int *tasks;
-    int *taskAtRuntime;
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int usersTypeNumber;
+
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int timesNumber;
+
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int *tasks;
+
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        int *taskAtRuntime;
+
+        /*
+         * WRITE DESCRIPTION HERE
+         */
+        Solution *population;
+
+        /*
+         * uses the heuristic
+         */
+        int innerSolve(Solution *initialSolution, Solution *finalSolution);
+
+        /*
+         * TODO WRITE DESCRIPTION HERE
+         */
+        Solution *generateInitialSolution();
 };
 
 #endif /* ProblemData_hpp */
