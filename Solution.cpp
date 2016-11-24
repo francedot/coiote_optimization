@@ -5,15 +5,14 @@
 #include "Solution.hpp"
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * todo comments
  */
 Solution::Solution() {
-
 
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * documentation (n = number of cells invariant)
  */
 void Solution::populateSolution(Solution *initialSolution, int n, int *remainingTask, int ***people, CostMatrix *costs,
                                 int N) {
@@ -49,6 +48,9 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *remaining
     }
 }
 
+/*
+ * todo comments
+ */
 void Solution::generateInitialSolution(int *remainingTask, int ***people, CostMatrix *costs, int N) {
     populateSolution(nullptr, 0, remainingTask, people, costs, N);
 }

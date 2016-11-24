@@ -12,76 +12,36 @@
 using namespace std;
 
 class Problem {
-    public:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        Problem(string inputPath, string outputPath);
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int load();
+public:
+    /*
+     * todo comments
+     */
+    Problem(string inputPath, string outputPath);
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        void writeSolution(bool printScreen);
+    void load();
 
-        /*
-         * generate initial solution and solve the problem running innerSolve
-         */
-        int solve(Solution *finalSolution);
+    void writeSolution(bool printScreen);
 
-    private:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        string inputPath;
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        string outputPath;
+    int solve(Solution *finalSolution);
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int cellsNumber;
+private:
+    /*
+     * todo comments
+     */
+    string inputPath;
+    string outputPath;
+    int cellsNumber;
+    int periodsNumber;
+    int peopleTypes;
+    int timesNumber;
+    int *totalTasks;
+    int *remainingTasks;
+    Solution *population;
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int usersTypeNumber;
+    int innerSolve(Solution *initialSolution, Solution *finalSolution);
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int timesNumber;
-
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int *totalTasks;
-
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int *remainingTasks;
-
-        /*
-         * WRITE DESCRIPTION HERE
-         */
-        Solution *population;
-
-        /*
-         * uses the heuristic
-         */
-        int innerSolve(Solution *initialSolution, Solution *finalSolution);
-
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        Solution *generateInitialSolution();
+    Solution *generateInitialSolution();
 };
 
 #endif /* ProblemData_hpp */

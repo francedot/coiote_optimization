@@ -13,29 +13,26 @@
 using namespace std;
 
 class Solution {
-    public:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        Solution();
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        void
-        populateSolution(Solution *initialSolution, int n, int *remainingTask, int ***people, CostMatrix *costs, int N);
+public:
+    /*
+     * todo comments
+     */
+    Solution();
 
+    void
+    populateSolution(Solution *initialSolution, int n, int *remainingTask, int ***people, CostMatrix *costs, int N);
+
+    SolutionCell *generateNeighborhood();
     void generateInitialSolution(int *remainingTask, int ***people, CostMatrix *costs, int N);
-
     void addSolutionCell(SolutionCell toAdd);
-
-
     SolutionCell getCell(int n);
-    private:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        vector<SolutionCell> cells;
+
+private:
+    /*
+     * todo comments
+     */
+    vector<SolutionCell> cells;
     int totalCost;
 };
 

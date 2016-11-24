@@ -3,44 +3,68 @@
  */
 
 #include "Problem.hpp"
+#include <fstream>
+#include <sstream>
+
+using namespace std;
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * get inputPath and outputPath from command line
  */
 Problem::Problem(string inputPath, string outputPath) {
-
+    this->inputPath = inputPath;
+    this->outputPath = outputPath;
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * load Input file
  */
-int Problem::load() {
-    return 0;
+void Problem::load() {
+    string line; // contains a line of the Input file
+    string word; // contains a single word (into a line)
+
+    // open Input file
+    ifstream inputFileStream(Problem::inputPath.c_str());
+
+    if (!inputFileStream.is_open()) {
+        // todo lancia eccezione
+        throw new Exception("Error: unable to open " + Problem::inputPath);
+    }
+
+    /*
+     * read first line: cellsNumber periodsNumber peopleTypes
+     */
+    getline(inputFileStream, line);
+    istringstream inputStringStream(line);
+
+    inputStringStream >> word;
+
+    return;
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * todo comments
  */
 void Problem::writeSolution(bool printScreen) {
 
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * generate initial solution and solve the problem running innerSolve
  */
 int Problem::solve(Solution *finalSolution) {
     return 0;
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * uses the heuristic
  */
 int Problem::innerSolve(Solution *initialSolution, Solution *finalSolution) {
     return 0;
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * todo comments
  */
 Solution *Problem::generateInitialSolution() {
     return nullptr;

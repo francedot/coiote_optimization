@@ -11,29 +11,21 @@
 using namespace std;
 
 class CostMatrix {
-    public:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        CostMatrix(int dim);
 
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int loadMatrix(istream inputFile);
-        // TODO check why it makes the build fail
+public:
+    /*
+     * todo comments
+     */
+    CostMatrix(int cellsNumber, int periodsNumber, int peopleTypes);
 
+    int loadMatrix();
 
-    private:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int dim;
-
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        int **costs;
+private:
+    /*
+     * todo comments
+     */
+    int dim;
+    int **costs;
 };
 
 #endif /* CostMatrix_hpp */

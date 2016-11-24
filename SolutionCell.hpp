@@ -5,55 +5,47 @@
 #ifndef SolutionCell_hpp
 #define SolutionCell_hpp
 
+#include "SolutionCell.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 
 class SolutionCell {
-    public:
-        /*
-         * TODO WRITE DESCRIPTION HERE
-         */
-        SolutionCell(int i, int j, int m, int t, int x);
 
-        /*
-         * GETTERS
-         */
-        int getI();
-        int getJ();
-        int getType();
-        int getTime();
+public:
+    /*
+     * todo comments
+     */
+    SolutionCell(int i, int j, int m, int t);
 
+    void printCell();
+
+    int getI();
+
+    int getJ();
+
+    int getType();
+
+    int getTime();
     int getX();
 
-        /*
-         * SETTERS
-         */
-        int setI();
-        int setJ();
-        int setType();
-        int setTime();
-        void printCell();
+    int setX();
 
-    private:
-        /*
-         * source (i) and destination (j) of the move
-         */
-        int i, j;
+    int setI();
 
-        /*
-         * type of user asked to move
-         */
-        int type;
+    int setJ();
 
-        /*
-         * number of users with same characteristics asked to move
-         */
-        int x;
+    int setType();
 
-        /*
-         * time period of the move
-         */
-        int t;
+    int setTime();
+
+private:
+    /*
+     * todo comments
+     */
+    int i, j;
+    int type;
+    int x;
+    int t;
 };
 
 #endif /* SolutionCell_hpp */

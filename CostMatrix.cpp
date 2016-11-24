@@ -5,14 +5,14 @@
 #include "CostMatrix.hpp"
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * todo comments
  */
 CostMatrix::CostMatrix(int dim) {
 
 }
 
 /*
- * TODO WRITE DESCRIPTION HERE
+ * todo comments
  */
 int CostMatrix::loadMatrix(istream inputFile) {
     // TODO check why it makes the build fail
