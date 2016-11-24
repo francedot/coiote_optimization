@@ -34,6 +34,7 @@ private:
     void populateSolution(Solution *initialSolution, int n, int *task, int ***people, CostMatrix *costs, int N);
 
     int totalCost;
+    
 };
 
 #endif /* Solution_hpp */
