@@ -13,7 +13,7 @@ class SolutionCell {
         /*
          * TODO WRITE DESCRIPTION HERE
          */
-        SolutionCell(int i, int j, int m, int t);
+        SolutionCell(int i, int j, int m, int t, int x);
 
         /*
          * GETTERS
@@ -22,6 +22,8 @@ class SolutionCell {
         int getJ();
         int getType();
         int getTime();
+
+    int getX();
 
         /*
          * SETTERS
@@ -46,7 +48,7 @@ class SolutionCell {
         /*
          * number of users with same characteristics asked to move
          */
-        int value;
+        int x;
 
         /*
          * time period of the move

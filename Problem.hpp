@@ -61,12 +61,12 @@ class Problem {
         /*
          * TODO WRITE DESCRIPTION HERE
          */
-        int *tasks;
+        int *totalTasks;
 
         /*
          * TODO WRITE DESCRIPTION HERE
          */
-        int *taskAtRuntime;
+        int *remainingTasks;
 
         /*
          * WRITE DESCRIPTION HERE

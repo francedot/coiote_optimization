@@ -39,6 +39,10 @@ int SolutionCell::getTime() {
     return 0;
 }
 
+int SolutionCell::getX() {
+    return value;
+}
+
 /*
  * TODO WRITE DESCRIPTION HERE
  */

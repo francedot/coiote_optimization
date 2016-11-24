@@ -14,7 +14,7 @@ CostMatrix::CostMatrix(int dim) {
 /*
  * TODO WRITE DESCRIPTION HERE
  */
-int CostMatrix::loadMatrix(ifstream inputFile) {
+int CostMatrix::loadMatrix(istream inputFile) {
     // TODO check why it makes the build fail
     return 0;
 }
