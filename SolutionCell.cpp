@@ -15,6 +15,10 @@ SolutionCell::SolutionCell(int i, int j, int m, int t, int x) {
     this->x = x;
 }
 
+SolutionCell *SolutionCell::clone() {
+    return new SolutionCell(i, j, type, t, x);
+}
+
 /*
  * todo comments
  */

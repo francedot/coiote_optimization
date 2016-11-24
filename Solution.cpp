@@ -14,26 +14,46 @@ Solution::Solution() {
 /*
  * initialSolution = eventuale soluzione iniziale di cui generare il vicinato. (null = genera nuova soluzione)
  * n = numero di celle da lasciare invariate nella generazione del vicinato
+ * N = numero di celle in totale [parametro del problema]
  * null implica n = 0
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
-void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, int ***people, CostMatrix *costs, int N) {
+void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, int sizeOfTasks, int ***people,
+                                CostMatrix *costs, int N) {
     // People is a matrix Time x TypePerson x CellNumber
-    int *remainingTask;
-    int *availablePeolpe;
+    // TODO: Add exception / full control of passed parameters
+    int remainingTask[sizeOfTasks];
+    // TODO: [available/pickable]People never used/initialized
+    int *availablePeople;
     int pickablePeople;
-    totalCost = 0;
-
-    //TODO copiare tasks in remaningTasks
-
+    this->totalCost = 0;
+    double keptCellProbability = ((double) n / (double) cells.size());
+    for (int i = 0; i < sizeOfTasks; i++)
+        remainingTask[i] = tasks[i];
     for (int i = 0; i < n; i++) {
-        int r = (int) (rand() / RAND_MAX *
-                       initialSolution->cells.size());     //choose which cells of previous solution has to be picked
-        SolutionCell toAdd = this->cells[r]; //TODO remove cell[r]
+        /*
+         * Codice commentato poichè abbiamo pensato di ottimizzare
+         * facendo scorrere un'unica volta la lista e controllando
+         * volta per volta la probabilità che esca
+         * */
+        /*int r = (int) ((rand() / RAND_MAX) * initialSolution->cells.size());     //choose which cells of previous solution has to be picked
+        SolutionCell toAdd = initialSolution->cells[r]; //TODO remove cell[r]
         remainingTask[toAdd.getJ()] -= toAdd.getX();
         people[toAdd.getTime()][toAdd.getType()][toAdd.getI()] -= toAdd.getX();
         totalCost += costs->getCost(toAdd.getI(), toAdd.getJ(), toAdd.getTime(), toAdd.getType());
-        addSolutionCell(toAdd);
+        addSolutionCell(toAdd);*/
+        vector<SolutionCell>::iterator it;
+        double r = ((double) rand()) / RAND_MAX;
+        for (it = initialSolution->cells.begin(); it != initialSolution->cells.end(); it++) {
+            if (r >= keptCellProbability) {
+                // TODO: Valuta se usare addSolutionCell [ Meno efficiente. Probabilmente è già ordinata ]
+                SolutionCell toAdd = *(it->clone());
+                this->cells.insert(this->cells.begin(), toAdd);
+                remainingTask[toAdd.getJ()] -= toAdd.getX();
+                people[toAdd.getTime()][toAdd.getType()][toAdd.getI()] -= toAdd.getX();
+                totalCost += costs->getCost(toAdd.getI(), toAdd.getJ(), toAdd.getTime(), toAdd.getType());
+            }
+        }
     }
     for (int j = 0; j < N; j++) {
         while (remainingTask[j] > 0) {

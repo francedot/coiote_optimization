@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -20,12 +21,15 @@ public:
 
     int loadMatrix();
 
+    void getMinimumCost(int j, int *i, int *m, int *t, int ***people);
+
 private:
     /*
      * todo comments
      */
     int dim;
-    int **costs;
+    int ****costs;
+    double *averageCosts; // Array of size N of avg costs
 };
 
 #endif /* CostMatrix_hpp */

@@ -17,6 +17,8 @@ public:
      */
     SolutionCell(int i, int j, int m, int t, int x);
 
+    SolutionCell *clone();
+
     void printCell();
 
     int getI();
