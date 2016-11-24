@@ -2,19 +2,24 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Solution.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/CostMatrix.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Loader.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Solution.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Loader.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Problem.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Problem.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CostMatrix.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Problem.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SolutionCell.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CostMatrix.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/config.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExceptionManager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Solution.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Solution.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/SolutionCell.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExceptionManager.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exceptions/Implementations/IOException.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exceptions/Implementations/CoioteException.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exceptions/Headers/CoioteException.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exceptions/Headers/CoioteBaseException.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Exceptions/Headers/IOException.hpp" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

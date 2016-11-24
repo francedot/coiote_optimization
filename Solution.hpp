@@ -20,10 +20,7 @@ public:
      */
     Solution();
 
-    void
-    populateSolution(Solution *initialSolution, int n, int *remainingTask, int ***people, CostMatrix *costs, int N);
-
-    SolutionCell *generateNeighborhood();
+    Solution *generateNeighborhood();
     void generateInitialSolution(int *remainingTask, int ***people, CostMatrix *costs, int N);
     void addSolutionCell(SolutionCell toAdd);
     SolutionCell getCell(int n);
@@ -33,6 +30,9 @@ private:
      * todo comments
      */
     vector<SolutionCell> cells;
+
+    void populateSolution(Solution *initialSolution, int n, int *task, int ***people, CostMatrix *costs, int N);
+
     int totalCost;
 };
 

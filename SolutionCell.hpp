@@ -15,7 +15,7 @@ public:
     /*
      * todo comments
      */
-    SolutionCell(int i, int j, int m, int t);
+    SolutionCell(int i, int j, int m, int t, int x);
 
     void printCell();
 

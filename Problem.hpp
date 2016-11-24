@@ -36,7 +36,6 @@ private:
     int peopleTypes;
     int timesNumber;
     int *totalTasks;
-    int *remainingTasks;
     Solution *population;
 
     int innerSolve(Solution *initialSolution, Solution *finalSolution);

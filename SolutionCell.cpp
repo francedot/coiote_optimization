@@ -7,8 +7,12 @@
 /*
  * todo comments
  */
-SolutionCell::SolutionCell(int i, int j, int m, int t) {
-
+SolutionCell::SolutionCell(int i, int j, int m, int t, int x) {
+    this->i = i;
+    this->j = j;
+    this->type = m;
+    this->t = t;
+    this->x = x;
 }
 
 /*
