@@ -93,14 +93,12 @@ void Solution::generateInitialSolution(int *remainingTask, int ***people, CostMa
 void Solution::addSolutionCell(SolutionCell toAdd) {
     // Adds a solution cell using an insertion sort
     vector<SolutionCell>::iterator it;
-    for (it = cells.begin(); (toAdd.getI() < it->getI()) && (it != cells.end()); it++);
+    for (it = cells.begin(); (toAdd.getI() > it->getI()) && (it != cells.end()); it++);
     if (it == cells.end()) {
         cells.push_back(toAdd);
         return;
     }
-    for (; (toAdd.getI() == it->getI()) && (toAdd.getJ() < it->getJ()); it++);
+    for (; (toAdd.getI() == it->getI()) && (toAdd.getJ() > it->getJ()) && (it != cells.end()); it++);
     cells.insert(it, toAdd);
     return;
 }
-
-
