@@ -20,7 +20,7 @@ class CostMatrix {
         /*
          * TODO WRITE DESCRIPTION HERE
          */
-        int loadMatrix(ifstream inputFile);
+        int loadMatrix(istream inputFile);
         // TODO check why it makes the build fail
 
 
