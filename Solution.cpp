@@ -18,7 +18,7 @@ Solution::Solution() {
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
 void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, int ***people, CostMatrix *costs, int N) {
-
+    // People is a matrix Time x TypePerson x CellNumber
     int *remainingTask;
     int *availablePeolpe;
     int pickablePeople;
@@ -89,8 +89,18 @@ void Solution::generateInitialSolution(int *remainingTask, int ***people, CostMa
     populateSolution(nullptr, 0, remainingTask, people, costs, N);
 }
 
-void Solution::addSolutionCell(SolutionCell toAdd) {
 
+void Solution::addSolutionCell(SolutionCell toAdd) {
+    // Adds a solution cell using an insertion sort
+    vector<SolutionCell>::iterator it;
+    for (it = cells.begin(); (toAdd.getI() < it->getI()) && (it != cells.end()); it++);
+    if (it == cells.end()) {
+        cells.push_back(toAdd);
+        return;
+    }
+    for (; (toAdd.getI() == it->getI()) && (toAdd.getJ() < it->getJ()); it++);
+    cells.insert(it, toAdd);
+    return;
 }
 
 
