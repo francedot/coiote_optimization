@@ -17,13 +17,24 @@ public:
     /*
      * todo comments
      */
+
+    struct CostCoordinates {
+        int i;
+        int m;
+        int t;
+    } typedef CostCoordinates;
+
     CostMatrix(int cellsNumber, int periodsNumber, int peopleTypes);
 
     int loadMatrix();
 
     void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
-    void getMinimumTaskCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
+    vector<CostMatrix::CostCoordinates> *
+    getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize);
+
+    vector<CostMatrix::CostCoordinates> *
+    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize);
 
     int getCost(int j, int i, int m, int t);
 

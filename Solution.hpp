@@ -23,7 +23,8 @@ public:
     Solution *generateNeighborhood();
 
     void generateInitialSolution(int *remainingTask, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
-    void addSolutionCell(SolutionCell toAdd);
+
+    void addSolutionCell(SolutionCell *toAdd);
     SolutionCell getCell(int n);
 
 private:

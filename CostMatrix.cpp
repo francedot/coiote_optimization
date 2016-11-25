@@ -60,7 +60,12 @@ void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, in
 
 }
 
-void CostMatrix::getMinimumTaskCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
+/*
+ * TODO: Description
+ * Note: Remember to delete the returned vector, which is allocated inside
+ */
+vector<CostMatrix::CostCoordinates> *
+CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -70,6 +75,104 @@ void CostMatrix::getMinimumTaskCost(int j, int *i, int *m, int *t, int ***people
      */
     // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
 
+    vector<CostMatrix::CostCoordinates> *minsVector = new vector<CostMatrix::CostCoordinates>;
+
+    double maxDistanceFromMin = 0.5;
+
+    int peopleTemp;
+    for (int t_ = 0; t_ < tSize; t_++) {
+        for (int i_ = 0; i_ < iSize; i_++) {
+            for (int m_ = 0; m_ < mSize; m_++) {
+                if ((peopleTemp = people[t_][m_][i_]) > 0) {
+                    if (this->costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
+                        CostMatrix::CostCoordinates *currentCoordinates = new CostMatrix::CostCoordinates();
+                        currentCoordinates->i = i_;
+                        currentCoordinates->m = t_;
+                        currentCoordinates->t = m_;
+                        minsVector->push_back(*currentCoordinates);
+                        if ((remainingTasksForJ -= (m_ + 1) * peopleTemp) <= 0) {
+                            /*
+                             * Solution 1: Guarantees no waste of resources (people) at the
+                             * computational cost of extending the reasarch at the end (last
+                             * cells)
+                             */
+                            if (remainingTasksForJ != 0) {
+                                minsVector->pop_back();
+                                remainingTasksForJ += (m_ + 1) * peopleTemp;
+                            } else {
+                                return minsVector;
+                            }
+                            /*
+                             * Solution 2: here the remainingTasks might be negative, in the
+                             * sense that a person of type 2 [1] or 3 [2] is being used for
+                             * les than the max jobs that could accomplish. The advantage is
+                             * that the research is the minimum for a given distanceFromAvg
+                             */
+//                            return minsVector;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*
+ * TODO: Description
+ * Note: Remember to delete the returned vector, which is allocated inside
+ */
+vector<CostMatrix::CostCoordinates> *
+CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people, int tSize, int mSize,
+                                          int iSize) {
+    /*
+     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
+     *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
+     *      costo che sia sostanzialmente più piccolo della media per j.
+     *      Se sai qual è il costo medio cAvg, ad ogni iterazione prendi il primo
+     *      elemento elem di costMatrix <= (0.5 * cAvg)
+     */
+    // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
+
+    vector<CostMatrix::CostCoordinates> *minsVector = new vector<CostMatrix::CostCoordinates>;
+
+    double maxDistanceFromMin = 0.5;
+
+    int peopleTemp;
+    for (int t_ = 0; t_ < tSize; t_++) {
+        for (int i_ = 0; i_ < iSize; i_++) {
+            for (int m_ = 0; m_ < mSize; m_++) {
+                if ((peopleTemp = people[t_][m_][i_]) > 0) {
+                    if (this->costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
+                        CostMatrix::CostCoordinates *currentCoordinates = new CostMatrix::CostCoordinates();
+                        currentCoordinates->i = i_;
+                        currentCoordinates->m = t_;
+                        currentCoordinates->t = m_;
+                        minsVector->push_back(*currentCoordinates);
+                        if ((remainingTasksForJ -= (m_ + 1)) <= 0) {
+                            /*
+                             * Solution 1: Guarantees no waste of resources (people) at the
+                             * computational cost of extending the reasarch at the end (last
+                             * cells)
+                             */
+                            if (remainingTasksForJ != 0) {
+                                minsVector->pop_back();
+                                remainingTasksForJ += (m_ + 1);
+                            } else {
+                                return minsVector;
+                            }
+                            /*
+                             * Solution 2: here the remainingTasks might be negative, in the
+                             * sense that a person of type 2 [1] or 3 [2] is being used for
+                             * les than the max jobs that could accomplish. The advantage is
+                             * that the research is the minimum for a given distanceFromAvg
+                             */
+//                            return minsVector;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 int CostMatrix::getCost(int j, int i, int m, int t) {
