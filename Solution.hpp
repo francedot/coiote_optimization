@@ -21,7 +21,8 @@ public:
     Solution();
 
     Solution *generateNeighborhood();
-    void generateInitialSolution(int *remainingTask, int ***people, CostMatrix *costs, int N);
+
+    void generateInitialSolution(int *remainingTask, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
     void addSolutionCell(SolutionCell toAdd);
     SolutionCell getCell(int n);
 

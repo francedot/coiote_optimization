@@ -21,7 +21,9 @@ public:
 
     int loadMatrix();
 
-    void getMinimumCost(int j, int *i, int *m, int *t, int ***people);
+    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
+
+    void getMinimumTaskCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
     int getCost(int j, int i, int m, int t);
 

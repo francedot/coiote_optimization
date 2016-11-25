@@ -12,7 +12,7 @@
  *                Sembra un impiccio ma porta ad un'ottimizzazione sostanziale (vedi getMinimumCost)
  *
  *                Per il calcolo della media di un enorme numero di elementi letti volta per volta
- *                esiste un algoritmo che evita overflow:
+ *                abbiamo scritto la funzione welford in util.cpp
  *
  *
 */
@@ -57,6 +57,18 @@ void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, in
             }
         }
     }
+
+}
+
+void CostMatrix::getMinimumTaskCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
+    /*
+     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
+     *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
+     *      costo che sia sostanzialmente più piccolo della media per j.
+     *      Se sai qual è il costo medio cAvg, ad ogni iterazione prendi il primo
+     *      elemento elem di costMatrix <= (0.5 * cAvg)
+     */
+    // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
 
 }
 

@@ -10,7 +10,6 @@
 Solution::Solution() {
 
 }
-
 /*
  * initialSolution = eventuale soluzione iniziale di cui generare il vicinato. (null = genera nuova soluzione)
  * n = numero di celle da lasciare invariate nella generazione del vicinato
@@ -38,7 +37,8 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
          * Inoltre, abbiamo modificato il tutto in modo da non
          * distruggere la initialSolution.
          * */
-        /*int r = (int) ((rand() / RAND_MAX) * initialSolution->cells.size());     //choose which cells of previous solution has to be picked
+        /*int r = (int) ((rand() / RAND_MAX) * initialSolution->cells.size());
+        //choose which cells of previous solution has to be picked
         SolutionCell toAdd = initialSolution->cells[r]; //TODO remove cell[r]
         remainingTask[toAdd.getJ()] -= toAdd.getX();
         people[toAdd.getTime()][toAdd.getType()][toAdd.getI()] -= toAdd.getX();
@@ -107,8 +107,8 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
 /*
  * todo comments
  */
-void Solution::generateInitialSolution(int *remainingTask, int ***people, CostMatrix *costs, int N) {
-    populateSolution(nullptr, 0, remainingTask, people, costs, N);
+void Solution::generateInitialSolution(int *remainingTask, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
+    populateSolution(nullptr, 0, remainingTask, sizeOfTasks, people, costs, N);
 }
 
 
