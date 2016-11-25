@@ -34,7 +34,9 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
         /*
          * Codice commentato poichè abbiamo pensato di ottimizzare
          * facendo scorrere un'unica volta la lista e controllando
-         * volta per volta la probabilità che esca
+         * volta per volta la probabilità che esca.
+         * Inoltre, abbiamo modificato il tutto in modo da non
+         * distruggere la initialSolution.
          * */
         /*int r = (int) ((rand() / RAND_MAX) * initialSolution->cells.size());     //choose which cells of previous solution has to be picked
         SolutionCell toAdd = initialSolution->cells[r]; //TODO remove cell[r]
@@ -43,15 +45,15 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
         totalCost += costs->getCost(toAdd.getI(), toAdd.getJ(), toAdd.getTime(), toAdd.getType());
         addSolutionCell(toAdd);*/
         vector<SolutionCell>::iterator it;
-        double r = ((double) rand()) / RAND_MAX;
         for (it = initialSolution->cells.begin(); it != initialSolution->cells.end(); it++) {
+            double r = ((double) rand()) / RAND_MAX;
             if (r >= keptCellProbability) {
                 // TODO: Valuta se usare addSolutionCell [ Meno efficiente. Probabilmente è già ordinata ]
-                SolutionCell toAdd = *(it->clone());
-                this->cells.insert(this->cells.begin(), toAdd);
-                remainingTask[toAdd.getJ()] -= toAdd.getX();
-                people[toAdd.getTime()][toAdd.getType()][toAdd.getI()] -= toAdd.getX();
-                totalCost += costs->getCost(toAdd.getI(), toAdd.getJ(), toAdd.getTime(), toAdd.getType());
+                SolutionCell cellToAdd = *(it->clone());
+                this->cells.insert(this->cells.begin(), cellToAdd);
+                remainingTask[cellToAdd.getJ()] -= cellToAdd.getX();
+                people[cellToAdd.getTime()][cellToAdd.getType()][cellToAdd.getI()] -= cellToAdd.getX();
+                totalCost += costs->getCost(cellToAdd.getI(), cellToAdd.getJ(), cellToAdd.getType(), cellToAdd.getTime());
             }
         }
     }
@@ -95,8 +97,8 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
                 }
                 default:;  // TODO throw exception
             }
-            SolutionCell toAdd(i, j, m, t, x);
-            addSolutionCell(toAdd);
+            SolutionCell cellToAdd = SolutionCell(i, j, m, t, x);
+            addSolutionCell(cellToAdd);
             // TODO: addSolutionCell must check for cases where <i,j,m,t> for the new entry equals those of an old entry
         }
     }
