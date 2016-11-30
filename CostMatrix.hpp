@@ -14,6 +14,8 @@ using namespace std;
 class CostMatrix {
 
 public:
+
+    CostMatrix();
     /*
      * todo comments
      */

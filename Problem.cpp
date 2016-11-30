@@ -69,3 +69,5 @@ int Problem::innerSolve(Solution *initialSolution, Solution *finalSolution) {
 Solution *Problem::generateInitialSolution() {
     return nullptr;
 }
+
+

@@ -20,12 +20,18 @@ public:
      */
     Solution();
 
-    Solution *generateNeighborhood();
+    vector<Solution *> *
+    generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
 
     void generateInitialSolution(int *remainingTask, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
 
     void addSolutionCell(SolutionCell *toAdd);
+
+    Solution *generateNeighbor(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+
     SolutionCell getCell(int n);
+
+    int evaluate();
 
 private:
     /*

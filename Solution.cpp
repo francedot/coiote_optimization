@@ -136,3 +136,23 @@ void Solution::addSolutionCell(SolutionCell *toAdd) {
     cells.insert(it, *toAdd);
     return;
 }
+
+vector<Solution *> *
+Solution::generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs,
+                               int N) {
+    vector<Solution *> *neighborhood = new vector<Solution *>(size);
+    for (int i = 0; i < size; i++) {
+        neighborhood->push_back(generateNeighbor(kept, tasks, sizeOfTasks, people, costs, N));
+    }
+    return neighborhood; //Use delete[] to delete this array;
+}
+
+Solution *Solution::generateNeighbor(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
+    Solution *newSol = new Solution();
+    newSol->populateSolution(this, kept, tasks, sizeOfTasks, people, costs, N);
+    return newSol;
+}
+
+int Solution::evaluate() {
+    return totalCost;
+}

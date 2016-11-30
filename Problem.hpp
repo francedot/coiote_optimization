@@ -34,7 +34,6 @@ private:
     int cellsNumber;
     int periodsNumber;
     int peopleTypes;
-    int timesNumber;
     int *totalTasks;
     Solution *population;
 
