@@ -14,7 +14,9 @@ using namespace std;
 Problem::Problem(string inputPath, string outputPath) {
     this->inputPath = inputPath;
     this->outputPath = outputPath;
+
 }
+
 
 /*
  * load Input file
@@ -46,13 +48,43 @@ void Problem::load() {
  * todo comments
  */
 void Problem::writeSolution(bool printScreen) {
-
 }
 
 /*
  * generate initial solution and solve the problem running innerSolve
  */
-int Problem::solve(Solution *finalSolution) {
+int Problem::solve(Solution *finalSolution, int populationDimension) {
+
+
+    Solution initialSolution;
+    int evaluations[populationDimension];
+    int maxCostInElite = 0;
+    if (eliteDimension == 0 || eliteDimension > populationDimension) {
+        //TODO throw exception
+    }
+    int eliteIndexes[eliteDimension]; //TODO definire elitedimension parametro del population-based simulated annealing (vedi paper)
+    for (int i = 0; i < eliteDimensions; i++) {
+        eliteIndexes[i] = i;
+        if (population[i].evaluate())
+    }
+    initialSolution.generateInitialSolution(totalTasks, cellsNumber, people->getPeopleMatrix(), costs, cellsNumber);
+    population = new Solution[populationDimension];
+    for (int i = 0; i < populationDimension; i++) {
+        population[i] = initialSolution;
+    }
+    SimulatedAnnealing simAnnealings[populationDimension];
+    for (int i = 0; i < populationDimension; i++) {
+        simAnnealings[i].setInitialSolution(&population[i]);
+        // TODO 5 = celle invarianti nella generazione del vicinato, 2 numero di steps per ondata
+        simAnnealings[i].run(5, totalTasks, cellsNumber, people->getPeopleMatrix(), costs, cellsNumber, 2);
+    }
+
+
+    for (int i = 0; i < populationDimension; i++) {
+        if (population[i])
+    }
+
+
     return 0;
 }
 

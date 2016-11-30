@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <iostream>
 #include "Solution.hpp"
-
+#include "PeopleMatrix.hpp"
+#include "SimulatedAnnealing.hpp"
 using namespace std;
 
 class Problem {
@@ -23,7 +24,7 @@ public:
 
     void writeSolution(bool printScreen);
 
-    int solve(Solution *finalSolution);
+    int solve(Solution *finalSolution, int populationDimension);
 
 private:
     /*
@@ -36,6 +37,9 @@ private:
     int peopleTypes;
     int *totalTasks;
     Solution *population;
+    CostMatrix *costs;
+    PeopleMatrix *people;
+
 
     int innerSolve(Solution *initialSolution, Solution *finalSolution);
 

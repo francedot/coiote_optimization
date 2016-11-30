@@ -10,6 +10,13 @@
 Solution::Solution() {
 
 }
+
+Solution::Solution(const Solution &toCopy) {
+    totalCost = toCopy.totalCost;
+    for (int i = 0; i < toCopy.cells.size(); i++) {
+        cells.push_back(*toCopy.cells[i].clone()); //TODO copy constructor
+    }
+}
 /*
  * initialSolution = eventuale soluzione iniziale di cui generare il vicinato. (null = genera nuova soluzione)
  * n = numero di celle da lasciare invariate nella generazione del vicinato
@@ -17,7 +24,7 @@ Solution::Solution() {
  * null implica n = 0
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
-void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, int sizeOfTasks, int ***people,
+void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int *tasks, int sizeOfTasks, int ***people,
                                 CostMatrix *costs, int N) {
     // People is a matrix Time x TypePerson x CellNumber
     // TODO: Add exception / full control of passed parameters
@@ -26,10 +33,10 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
     int *availablePeople;
     int pickablePeople;
     this->totalCost = 0;
-    double keptCellProbability = ((double) n / (double) cells.size());
+    double keptCellProbability = ((double) keptSolCells / (double) cells.size());
     for (int i = 0; i < sizeOfTasks; i++)
         remainingTask[i] = tasks[i];
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < keptSolCells; i++) {
         /*
          * Codice commentato poichè abbiamo pensato di ottimizzare
          * facendo scorrere un'unica volta la lista e controllando
@@ -60,7 +67,8 @@ void Solution::populateSolution(Solution *initialSolution, int n, int *tasks, in
     for (int j = 0; j < N; j++) {
         int x = 0, i = 0, t = 0, m = 0;
         vector<CostMatrix::CostCoordinates> *minsVector = costs->getMinimumTaskCost(j, remainingTask[j], people, tSize,
-                                                                                    mSize, iSize);
+                                                                                    mSize,
+                                                                                    iSize); // TODO referenziare ste robe
 
         vector<CostMatrix::CostCoordinates>::iterator it = minsVector->begin();
         while (remainingTask[j]) {
@@ -138,18 +146,20 @@ void Solution::addSolutionCell(SolutionCell *toAdd) {
 }
 
 vector<Solution *> *
-Solution::generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs,
+Solution::generateNeighborhood(int size, int keptSolCells, int *tasks, int sizeOfTasks, int ***people,
+                               CostMatrix *costs,
                                int N) {
     vector<Solution *> *neighborhood = new vector<Solution *>(size);
     for (int i = 0; i < size; i++) {
-        neighborhood->push_back(generateNeighbor(kept, tasks, sizeOfTasks, people, costs, N));
+        neighborhood->push_back(generateNeighbor(keptSolCells, tasks, sizeOfTasks, people, costs, N));
     }
     return neighborhood; //Use delete[] to delete this array;
 }
 
-Solution *Solution::generateNeighbor(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
+Solution *
+Solution::generateNeighbor(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
     Solution *newSol = new Solution();
-    newSol->populateSolution(this, kept, tasks, sizeOfTasks, people, costs, N);
+    newSol->populateSolution(this, keptSolCells, tasks, sizeOfTasks, people, costs, N);
     return newSol;
 }
 

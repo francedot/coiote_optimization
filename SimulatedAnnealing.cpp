@@ -6,6 +6,11 @@
 #include <math.h>
 
 
+SimulatedAnnealing::SimulatedAnnealing() {
+    maxTemperature = 100;
+    currentTemperature = maxTemperature;
+}
+
 SimulatedAnnealing::SimulatedAnnealing(Solution *initialSolution) {
     currentSolution = initialSolution;
     maxTemperature = 100;
@@ -18,18 +23,27 @@ SimulatedAnnealing::SimulatedAnnealing(Solution *initialSolution, int maxTempera
     currentTemperature = maxTemperature;
 }
 
-void
-SimulatedAnnealing::run(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N, int steps) {
+Solution *SimulatedAnnealing::getCurrSolution() {
+    return currentSolution;
+}
+
+void SimulatedAnnealing::setInitialSolution(Solution *initialSolution) {
+    currentSolution = initialSolution;
+}
+
+void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs,
+                             int N, int steps) {
     for (int i = 0; i < steps; i++) {
-        runStep(kept, tasks, sizeOfTasks, people, costs, N);
-        currentTemperature -= 10;
+        runStep(keptSolCells, tasks, sizeOfTasks, people, costs, N);
+        currentTemperature -= 5;
     }
 }
 
-void SimulatedAnnealing::runStep(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
+void
+SimulatedAnnealing::runStep(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N) {
     Solution *newSol;
     for (int i = 0; i < 20; i++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
-        newSol = currentSolution->generateNeighbor(kept, tasks, sizeOfTasks, people, costs, N);
+        newSol = currentSolution->generateNeighbor(keptSolCells, tasks, sizeOfTasks, people, costs, N);
         int difference = newSol->evaluate() - currentSolution->evaluate();
         if (difference <= 0) {
             delete currentSolution;

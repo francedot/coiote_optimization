@@ -9,13 +9,19 @@
 
 class SimulatedAnnealing {
 public:
+    SimulatedAnnealing();
+
     SimulatedAnnealing(Solution *initialSolution);
 
     SimulatedAnnealing(Solution *initialSolution, int maxTemperature);
 
-    void runStep(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+    Solution *getCurrSolution();
 
-    void run(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N, int steps);
+    void setInitialSolution(Solution *initialSolution);
+
+    void runStep(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+
+    void run(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N, int steps);
 
 private:
     int currentTemperature;
