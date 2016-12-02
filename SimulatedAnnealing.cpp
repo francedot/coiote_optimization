@@ -31,6 +31,10 @@ void SimulatedAnnealing::setInitialSolution(Solution *initialSolution) {
     currentSolution = initialSolution;
 }
 
+void SimulatedAnnealing::resetTemperature() {
+    currentTemperature = maxTemperature;
+}
+
 void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs,
                              int N, int steps) {
     for (int i = 0; i < steps; i++) {

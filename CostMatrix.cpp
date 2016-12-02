@@ -22,7 +22,7 @@
 /*
  * todo comments
  */
-CostMatrix::CostMatrix(int dim) {
+CostMatrix::CostMatrix() {
 
 }
 
@@ -64,8 +64,8 @@ void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, in
  * TODO: Description
  * Note: Remember to delete the returned vector, which is allocated inside
  */
-vector<CostMatrix::CostCoordinates> *
-CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize) {
+vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, int ***people,
+                                                                    int tSize, int mSize, int iSize) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -121,9 +121,9 @@ CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int
  * TODO: Description
  * Note: Remember to delete the returned vector, which is allocated inside
  */
-vector<CostMatrix::CostCoordinates> *
-CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people, int tSize, int mSize,
-                                          int iSize) {
+vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ,
+                                                                               int ***people, int tSize, int mSize,
+                                                                               int iSize) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo

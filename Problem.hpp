@@ -10,6 +10,7 @@
 #include "Solution.hpp"
 #include "PeopleMatrix.hpp"
 #include "SimulatedAnnealing.hpp"
+#include "ExceptionManager.h"
 using namespace std;
 
 class Problem {
@@ -24,7 +25,7 @@ public:
 
     void writeSolution(bool printScreen);
 
-    int solve(Solution *finalSolution, int populationDimension);
+    int solve(Solution *finalSolution, int populationDimension, int eliteDimension);
 
 private:
     /*
@@ -39,11 +40,15 @@ private:
     Solution *population;
     CostMatrix *costs;
     PeopleMatrix *people;
+    Solution *currentBestSolution;
 
 
     int innerSolve(Solution *initialSolution, Solution *finalSolution);
 
     Solution *generateInitialSolution();
+
+    bool updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> elite,
+                     int eliteDim); //return 1 if elite has been updated, 0 otherwise
 };
 
 #endif /* ProblemData_hpp */

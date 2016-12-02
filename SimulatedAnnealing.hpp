@@ -19,6 +19,8 @@ public:
 
     void setInitialSolution(Solution *initialSolution);
 
+    void resetTemperature();
+
     void runStep(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
 
     void run(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N, int steps);
