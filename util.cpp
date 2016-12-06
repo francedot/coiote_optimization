@@ -13,9 +13,8 @@
  *                 pass it initialized to 0.
 */
 
-void welford(double new_val, double *avg, double *stdv, long *index) {
-    (*index) += 1;
+void welford(double new_val, double *avg, double *stdv, long index) {
     double diff = new_val - (*avg);
-    (*stdv) = (*stdv) + (diff * diff * ((*index) - 1) / (*index));
-    (*avg) = (*avg) + (diff / (*index));
+    (*stdv) = (*stdv) + (diff * diff * (index) / (index + 1));
+    (*avg) = (*avg) + (diff / (index + 1));
 }

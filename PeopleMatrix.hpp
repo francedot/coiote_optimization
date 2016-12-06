@@ -10,8 +10,9 @@ class PeopleMatrix {
 public:
     int ***getPeopleMatrix();
 
+    void setValue(int t, int m, int i, int value);
 private:
-    int ***peopleMatrix;
+    int ***peopleMatrix;        // Indexes, for now, are t (time), m (personType), i (cell), in this order.
 };
 
 

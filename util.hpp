@@ -10,6 +10,6 @@
  * welford: Computes average and standard variation of possibly huge
  * number of values without risk of overflow.
 */
-void welford(double new_val, double *avg, double *stdv, long *index);
+void welford(double new_val, double *avg, double *stdv, long index);
 
 #endif //COIOTE_PROJECT_UTIL_HPP

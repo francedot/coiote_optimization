@@ -28,9 +28,9 @@ public:
 
     CostMatrix(int cellsNumber, int periodsNumber, int peopleTypes);
 
-    int loadMatrix();
+    int loadMatrix(istream inputFile);
 
-    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
+//    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
     vector<CostMatrix::CostCoordinates> *
     getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize);
@@ -40,13 +40,24 @@ public:
 
     int getCost(int j, int i, int m, int t);
 
+//    int getSize();
+
+    int getAvgCostsPerTask(int j);
+
+    int ****getMatrix();
+
+    void setValue(int j, int i, int m, int t, int value);
+
+    void updateAvgCostsPerTask(int j, int newValue, long index);
+
 private:
     /*
      * todo comments
      */
-    int dim;
+//    int size;               // Size of the square matrix
     int ****costs;
-    double *averageCosts; // Array of size N of avg costs
+    double *averageCostsPerTask;   // Array of size N of avg costs. See "updateAverageCostsPerTask()" for more info
+    double *stdvCostsPerTask;
 };
 
 #endif /* CostMatrix_hpp */

@@ -18,6 +18,7 @@
 */
 
 #include "CostMatrix.hpp"
+#include "util.hpp"
 
 /*
  * todo comments
@@ -30,35 +31,34 @@ CostMatrix::CostMatrix() {
  * todo comments
  */
 int CostMatrix::loadMatrix(istream inputFile) {
-    // TODO check why it makes the build fail
     return 0;
 }
 
-void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
-    /*
-     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
-     *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
-     *      costo che sia sostanzialmente più piccolo della media per j.
-     *      Se sai qual è il costo medio cAvg, ad ogni iterazione prendi il primo
-     *      elemento elem di costMatrix <= (0.5 * cAvg)
-     */
-    // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
-    double maxDistanceFromMin = 0.5;
-    for (int t_ = 0; t_ < tSize; t_++) {
-        for (int m_ = 0; m_ < mSize; m_++) {
-            for (int i_ = 0; i_ < iSize; i_++) {
-                if (people[t_][m_][i_] > 0) {
-                    if (this->costs[j][i_][m_][t_] <= (maxDistanceFromMin * averageCosts[j])) {
-                        *i = i_;
-                        *m = m_;
-                        *t = t_;
-                    }
-                }
-            }
-        }
-    }
-
-}
+//void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
+//    /*
+//     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
+//     *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
+//     *      costo che sia sostanzialmente più piccolo della media per j.
+//     *      Se sai qual è il costo medio cAvg, ad ogni iterazione prendi il primo
+//     *      elemento elem di costMatrix <= (0.5 * cAvg)
+//     */
+//    // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
+//    double maxDistanceFromMin = 0.5;
+//    for (int t_ = 0; t_ < tSize; t_++) {
+//        for (int m_ = 0; m_ < mSize; m_++) {
+//            for (int i_ = 0; i_ < iSize; i_++) {
+//                if (people[t_][m_][i_] > 0) {
+//                    if (this->costs[j][i_][m_][t_] <= (maxDistanceFromMin * averageCosts[j])) {
+//                        *i = i_;
+//                        *m = m_;
+//                        *t = t_;
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//}
 
 /*
  * TODO: Description
@@ -105,7 +105,7 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int r
                             /*
                              * Solution 2: here the remainingTasks might be negative, in the
                              * sense that a person of type 2 [1] or 3 [2] is being used for
-                             * les than the max jobs that could accomplish. The advantage is
+                             * less than the max jobs that could accomplish. The advantage is
                              * that the research is the minimum for a given distanceFromAvg
                              */
 //                            return minsVector;
@@ -163,7 +163,7 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
                             /*
                              * Solution 2: here the remainingTasks might be negative, in the
                              * sense that a person of type 2 [1] or 3 [2] is being used for
-                             * les than the max jobs that could accomplish. The advantage is
+                             * less than the max jobs that could accomplish. The advantage is
                              * that the research is the minimum for a given distanceFromAvg
                              */
 //                            return minsVector;
@@ -178,3 +178,41 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
 int CostMatrix::getCost(int j, int i, int m, int t) {
     return costs[j][i][m][t];
 }
+
+/*
+ * This method returns the average cost per task for the given destination cell "j".
+ */
+int CostMatrix::getAvgCostsPerTask(int j) {
+    return averageCostsPerTask[j];
+}
+
+/*
+ * It returns the internal representation of the cost matrix. Should be used with caution.
+ */
+int ****CostMatrix::getMatrix() {
+    return costs;
+}
+
+/*
+ * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
+ */
+void CostMatrix::setValue(int j, int i, int m, int t, int value) {
+    costs[j][i][m][t] = value;
+}
+
+/*
+ * Updates the avg and the stdv of costs-per-task. The param "index" is the number of the value so that the first
+ * value passed (independently from the j) will have index 0, the second value passed will have index 1 and so on.
+ * The last value to be inserted will have "index" = N_of_cells - 1.
+ * Remember to divide the cost by the number of tasks that the person of that type can perform. In this way
+ * "newValue" will hold the costPerTask (Example: if for a person of type m = 2 the cost is 30, then the cost per
+ * task will be 10 because that person can fullfill 3 tasks for that single bigger cost)
+ */
+void CostMatrix::updateAvgCostsPerTask(int j, int newValue, long index) {
+    welford(newValue, averageCostsPerTask + j, stdvCostsPerTask + j, index);
+}
+
+//int CostMatrix::getSize() {
+//    return size;
+//}
+
