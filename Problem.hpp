@@ -23,9 +23,12 @@ public:
 
     void load();
 
-    void writeSolution(bool printScreen);
+    void printValues(bool screen = 0,
+                     string path);                //stampa i valori delle obj function per le soluzioni delle popolazioni evidenziando l'elite
 
-    int solve(Solution *finalSolution, int populationDimension, int eliteDimension);
+    int solve(int populationDimension, int eliteDimension);
+
+    Solution *getBestSolution();
 
 private:
     /*
@@ -41,11 +44,6 @@ private:
     CostMatrix *costs;
     PeopleMatrix *people;
     Solution *currentBestSolution;
-
-
-    int innerSolve(Solution *initialSolution, Solution *finalSolution);
-
-    Solution *generateInitialSolution();
 
     bool updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> elite,
                      int eliteDim); //return 1 if elite has been updated, 0 otherwise

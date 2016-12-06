@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Problem.hpp"
+#include "util.h"
 
 using namespace std;
 
@@ -19,9 +20,15 @@ int main(int argc, const char *argv[]) {
      * argv[0] = inputPath
      * argv[1] = outputPath
      */
+
+    int populationDimension = 20;
+    int eliteDimension = 5;
+
     Problem *problem = new Problem(argv[1], argv[2]);
     try {
         problem->load();
+        problem->solve(populationDimension, eliteDimension);
+        problem->getBestSolution()->print(1);
     }
     catch (Exception exception1) {
 

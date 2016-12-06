@@ -164,3 +164,10 @@ Solution *Solution::generateNeighbor(int keptSolCells, int *tasks, int sizeOfTas
 int Solution::evaluate() {
     return totalCost;
 }
+
+void Solution::print(bool screen, string path) {
+    if (screen)
+        for (int i = 0; i < cells.size(); i++)
+            cells[i].print(1);
+    //todo print on output file
+}

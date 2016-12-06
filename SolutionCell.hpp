@@ -8,6 +8,8 @@
 #include "SolutionCell.hpp"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
+#include <iostream>
 
 class SolutionCell {
 
@@ -19,8 +21,6 @@ public:
 
     SolutionCell *clone();
 
-    void printCell();
-
     int getI();
 
     int getJ();
@@ -30,22 +30,24 @@ public:
     int getTime();
     int getX();
 
-    int setX();
+    int setX(int x);
 
-    int setI();
+    int setI(int i);
 
-    int setJ();
+    int setJ(int j);
 
-    int setType();
+    int setType(int m);
 
-    int setTime();
+    int setTime(int t);
+
+    void print(bool screen = 0, std::string path);
 
 private:
     /*
      * todo comments
      */
     int i, j;
-    int type;
+    int m;
     int x;
     int t;
 };

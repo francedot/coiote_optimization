@@ -35,6 +35,8 @@ public:
 
     int evaluate();
 
+    void print(bool screen = 0, string path = nullptr);
+
 private:
     /*
      * todo comments

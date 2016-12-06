@@ -44,17 +44,10 @@ void Problem::load() {
 }
 
 /*
- * todo comments
- */
-void Problem::writeSolution(bool printScreen) {
-    
-}
-
-/*
  * generate initial solution and solve the problemi with population-based simulated annealing
  * Parameters meaning explained in-line
  */
-int Problem::solve(Solution *finalSolution, int populationDimension, int eliteDimension) {
+int Problem::solve(int populationDimension, int eliteDimension) {
 
     Solution *initialSolution;
     vector<int> eliteIndexes;                       //The elite is an vector of the indexes of the best solution
@@ -66,7 +59,6 @@ int Problem::solve(Solution *finalSolution, int populationDimension, int eliteDi
 
     initialSolution->generateInitialSolution(totalTasks, cellsNumber, people->getPeopleMatrix(), costs, cellsNumber);
     currentBestSolution = initialSolution;          //at the beginning the best solution is the initial solution
-
     /*
      * below a population of instances of standard Simulation Annealing is declared, each one with his current solution stored inside,
      * provided in the first wave of the algorithm by making a copy (with copy-constructor) of the initial solution generated above;
@@ -88,7 +80,7 @@ int Problem::solve(Solution *finalSolution, int populationDimension, int eliteDi
         for (int i = 0; i < populationDimension; i++) {
             flag = false;
             for (int j = 0; j < eliteDimension; j++)
-                if (i = eliteIndexes[j]) flag = 1;       //checking if this solution is part of the elite
+                if (i == eliteIndexes[j]) flag = 1;       //checking if this solution is part of the elite
 
             if (flag) {     //if the Solution belongs to the elite the Simulated Annealing simply resume from the point it left
                 simAnnealings[i].run(invariantCellsOfNeighborhood, totalTasks, cellsNumber,
@@ -123,14 +115,14 @@ bool Problem::updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnne
     vector<int>::iterator it;
     bool flag = 0;
     for (int i = 0; i < simAnnealingDimension; i++) {
-        for (it = elite.begin(); it < elite.end(); it++) {
-            if (simAnnealingInstances[i].getCurrSolution()->evaluate() <
-                simAnnealingInstances[*it].getCurrSolution()->evaluate()) {
-                elite.insert(it - 1, i);
-                while (elite.size() > eliteDim)
-                    elite.pop_back();    //riporta la dimensione dell'elite a quella corretta
-            }
-        }
+        it = elite.begin(); //if elite is empty elite.begin() == elite.end()
+        while ((it <= elite.end()) && (simAnnealingInstances[i].getCurrSolution()->evaluate() <
+                                       simAnnealingInstances[*it].getCurrSolution()->evaluate()))
+            it++;
+        //con && se l'iteratore esce dalla dimensine massima di elite, non viene effettuato il secondo controllo
+        elite.insert(it, i);
+        if (elite.size() > eliteDim)
+            elite.pop_back();           //riporta la dimensione dell'elite a quella corretta
     }
     //checking if current best solution has to be updated.
     if (simAnnealingInstances[elite[0]].getCurrSolution()->evaluate() < currentBestSolution->evaluate()) {
@@ -138,6 +130,10 @@ bool Problem::updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnne
         flag = true;
     }
     return flag;
+}
+
+Solution *Problem::getBestSolution() {
+    return currentBestSolution;
 }
 
 
