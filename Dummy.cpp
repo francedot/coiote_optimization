@@ -6,10 +6,10 @@
 #include "Dummy.hpp"
 
 /*
- * This method fills the cost matrix with random numbers proportional to the distance between the cells
+ * This static method fills the cost matrix with random numbers proportional to the distance between the cells
  * and the person types and updates the average cost per task for each cell.
  */
-static void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int peopleTypes) {
+void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int peopleTypes) {
     int RANGE_MODIFIER = 2;
     int cost, diff, index = 0;
     for (int i = 0; i < cellsNumber; i++) {
@@ -29,11 +29,11 @@ static void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int t
 }
 
 /*
- * This method fills the "peopleMatrix" with random integers between "minPersons" and "maxPersons".
+ * This static method fills the "peopleMatrix" with random integers between "minPersons" and "maxPersons".
  * When using this method assure that "minPersons" is set such that the total number of people is sufficient
  * to satisfy all the tasks in each cell.
  */
-static void
+void
 Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlots, int peopleTypes, int minPersons,
                         int maxPersons) {
     int persons;
@@ -50,10 +50,10 @@ Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlo
 }
 
 /*
- * This method allocates the task array and returns it.
+ * This static method allocates the task array and returns it.
  * When deallocating, remember to use the "delete[]" operator.
  */
-static int *Dummy::allocateAndFillTasksArray(int size, int maxTasks) {
+int *Dummy::allocateAndFillTasksArray(int size, int maxTasks) {
     int *tasks = new int[size]();
     for (int i = 0; i < size; i++) {
         tasks[i] = (int) (((double) rand()) / RAND_MAX) * maxTasks;
@@ -62,10 +62,10 @@ static int *Dummy::allocateAndFillTasksArray(int size, int maxTasks) {
 }
 
 /*
- * This method returns the maximum number of tasks in a single cell. It is required to compute
+ * This static method returns the maximum number of tasks in a single cell. It is required to compute
  * the minimum number of people.
  */
-static int Dummy::getMaxTasks(int *tasks, int size) {
+int Dummy::getMaxTasks(int *tasks, int size) {
     int max = 0;
     for (int i = 0; i < size; i++) {
         max = (max < tasks[i]) ? tasks[i] : max;

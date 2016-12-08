@@ -13,10 +13,12 @@ Solution::Solution() {
 
 Solution::Solution(const Solution &toCopy) {
     totalCost = toCopy.totalCost;
-    for (int i = 0; i < toCopy.cells.size(); i++) {
-        cells.push_back(*toCopy.cells[i].clone()); //TODO copy constructor
-    }
+//    for (int i = 0; i < toCopy.cells.size(); i++) {
+//        cells.push_back(toCopy.cells[i]);
+//    }
+    cells = toCopy.cells; // Should be faster and uses copy constructors
 }
+
 /*
  * initialSolution = eventuale soluzione iniziale di cui generare il vicinato. (null = genera nuova soluzione)
  * n = numero di celle da lasciare invariate nella generazione del vicinato
@@ -56,24 +58,26 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
             double r = ((double) rand()) / RAND_MAX;
             if (r >= keptCellProbability) {
                 // TODO: Valuta se usare addSolutionCell [ Meno efficiente. Probabilmente è già ordinata ]
-                SolutionCell cellToAdd = *(it->clone());
-                this->cells.insert(this->cells.begin(), cellToAdd);
-                remainingTask[cellToAdd.getJ()] -= cellToAdd.getX();
-                people[cellToAdd.getTime()][cellToAdd.getType()][cellToAdd.getI()] -= cellToAdd.getX();
-                totalCost += costs->getCost(cellToAdd.getI(), cellToAdd.getJ(), cellToAdd.getType(), cellToAdd.getTime());
+//                SolutionCell cellToAdd = *it;
+//                this->cells.insert(this->cells.begin(), cellToAdd);
+//                remainingTask[cellToAdd.getJ()] -= cellToAdd.getX();
+//                people[cellToAdd.getTime()][cellToAdd.getType()][cellToAdd.getI()] -= cellToAdd.getX();
+//                totalCost += costs->getCost(cellToAdd.getI(), cellToAdd.getJ(), cellToAdd.getType(), cellToAdd.getTime());
+                this->cells.insert(this->cells.begin(), *it);
+                remainingTask[it->getJ()] -= it->getX();
+                people[it->getTime()][it->getType()][it->getI()] -= it->getX();
+                totalCost += costs->getCost(it->getI(), it->getJ(), it->getType(), it->getTime());
             }
         }
     }
     for (int j = 0; j < N; j++) {
         int x = 0, i = 0, t = 0, m = 0;
-        vector<CostMatrix::CostCoordinates> *minsVector = costs->getMinimumTaskCost(j, remainingTask[j], people, tSize,
-                                                                                    mSize,
-                                                                                    iSize); // TODO referenziare ste robe
+        vector<CostMatrix::CostCoordinates> *minsVector = costs->getMinimumTaskCost(j, remainingTask[j], people);
 
         vector<CostMatrix::CostCoordinates>::iterator it = minsVector->begin();
         while (remainingTask[j]) {
             for (it = minsVector->begin(); it != minsVector->end(); it++) {
-                remainingTask -= (it->m + 1);
+                remainingTask[j] -= (it->m + 1);
                 people[it->t][it->m][it->i] -= (it->m + 1);
             }
         }

@@ -30,9 +30,10 @@ int main(int argc, const char *argv[]) {
 
 //    Problem *problem = new Problem(argv[1], argv[2]);
 //    try {
+    cout << "Creating Problem\n";
     Problem *problem = new Problem(cellsNumber, peopleTypes, timePeriods);
-    problem->dummyLoad();
     problem->solve(populationDimension, eliteDimension);
+    cout << "Problem probably solved\n";
     problem->getBestSolution()->print(1, NULL);
 //    }
 //    catch (Exception exception1) {

@@ -18,8 +18,12 @@ SolutionCell::SolutionCell(int i, int j, int m, int t, int x) {
     this->x = x;
 }
 
-SolutionCell *SolutionCell::clone() {
-    return new SolutionCell(i, j, m, t, x);
+SolutionCell::SolutionCell(const SolutionCell &toCopy) {
+    i = toCopy.i;
+    j = toCopy.j;
+    m = toCopy.m;
+    t = toCopy.t;
+    x = toCopy.x;
 }
 
 /*

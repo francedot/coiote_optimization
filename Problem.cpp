@@ -4,6 +4,7 @@
 
 #include "Problem.hpp"
 #include "Dummy.hpp"
+#include "Exceptions/Headers/CoioteException.hpp"
 #include <fstream>
 #include <sstream>
 
@@ -51,7 +52,7 @@ void Problem::load() {
 
     if (!inputFileStream.is_open()) {
         // todo lancia eccezione
-        throw new Exception("Error: unable to open " + Problem::inputPath);
+        throw new CoioteException("Error: unable to open " + Problem::inputPath);
     }
 
     /*
@@ -69,6 +70,7 @@ void Problem::load() {
  * Just a temporary method that fills the problem data with randomly generated data
  */
 void Problem::dummyLoad() {
+    cout << "dummyLoad() called\n";
     int MAX_TASKS = 80;
     Dummy::fillCostMatrix(costs, cellsNumber, timePeriods, peopleTypes);
     Dummy::fillPeopleMatrix(people, cellsNumber, timePeriods, peopleTypes, MAX_TASKS, MAX_TASKS * 5);
@@ -80,6 +82,7 @@ void Problem::dummyLoad() {
  * Parameters meaning explained in-line
  */
 int Problem::solve(int populationDimension, int eliteDimension) {
+    cout << "solve() called, attempting to solve the problem\n";
 
     Solution *initialSolution;
     vector<int> eliteIndexes;                       //The elite is an vector of the indexes of the best solution

@@ -26,7 +26,7 @@ public:
     void dummyLoad();
 
     void printValues(bool screen = 0,
-                     string path);                //stampa i valori delle obj function per le soluzioni delle popolazioni evidenziando l'elite
+                     string path = "");                //stampa i valori delle obj function per le soluzioni delle popolazioni evidenziando l'elite
 
     int solve(int populationDimension, int eliteDimension);
 

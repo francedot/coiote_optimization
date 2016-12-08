@@ -19,7 +19,7 @@ public:
      */
     SolutionCell(int i, int j, int m, int t, int x);
 
-    SolutionCell *clone();
+    SolutionCell(const SolutionCell &toCopy);
 
     int getI();
 
@@ -40,7 +40,7 @@ public:
 
     int setTime(int t);
 
-    void print(bool screen = 0, std::string path);
+    void print(bool screen = 0, std::string path = "");
 
 private:
     /*

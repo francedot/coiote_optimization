@@ -4,12 +4,6 @@
 
 #include "../Headers/IOException.hpp"
 
-class IOException : CoioteException {
-public:
-    IOException() {
-        CoioteException::CoioteException();
-    }
-    IOException(std::string message) {
-        CoioteException::CoioteException(message);
-    }
-};
+IOException::IOException() {}
+
+IOException::IOException(std::string message) : CoioteException(message) {}

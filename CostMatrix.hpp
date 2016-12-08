@@ -15,12 +15,12 @@ class CostMatrix {
 
 public:
 
-    CostMatrix(int cellsNumber, int peopleTypes, int timePeriods);
     /*
-     * todo comments
+     * The following struct contains the four coordinates of an element of the costs matrix.
+     * It is used as a return type for the vector of coordinates of least cost for a certain task cells.
      */
-
     struct CostCoordinates {
+        int j;
         int i;
         int m;
         int t;
@@ -33,10 +33,10 @@ public:
 //    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
     vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCost(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize);
+    getMinimumTaskCost(int j, int remainingTasksForJ, int ***people);
 
     vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people, int tSize, int mSize, int iSize);
+    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people);
 
     int getCost(int j, int i, int m, int t);
 
@@ -54,8 +54,10 @@ private:
     /*
      * todo comments
      */
-//    int size;                       // Size of the square matrix
     int ****costs;                  // Indexes are j, i, m, t, in this order
+    int cellsNumber;                // Number of cells
+    int timePeriods;                // Number of time periods
+    int peopleTypes;                // Number of types of people
     double *averageCostsPerTask;    // Array of size N of avg costs. See "updateAverageCostsPerTask()" for more info
     double *stdvCostsPerTask;
 };

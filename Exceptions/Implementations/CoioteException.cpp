@@ -4,14 +4,8 @@
 
 #include "../Headers/CoioteException.hpp"
 
-class CoioteException : public CoioteBaseException {
-public:
-    CoioteException() {
-        // Delegates base class
-        CoioteBaseException::CoioteBaseException();
-    }
-    CoioteException(std::string message) {
-        // Delegates base class
-        CoioteBaseException::CoioteBaseException(message);
-    }
-};
+CoioteException::CoioteException() {}
+
+CoioteException::CoioteException(std::string message) : CoioteBaseException(message) {
+    // Delegates base class
+}

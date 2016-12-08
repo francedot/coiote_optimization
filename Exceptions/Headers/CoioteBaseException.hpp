@@ -14,7 +14,7 @@
  */
 class CoioteBaseException : public std::exception {
 public:
-    const char* what();
+//    const char* what();
     std::string getMessage();
     std::string setMessage(std::string message);
 protected:
@@ -23,7 +23,8 @@ protected:
      */
     CoioteBaseException();
     CoioteBaseException(std::string message);
-    virtual std::string message;
+
+    std::string message;
 };
 
 #endif //COIOTE_PROJECT_IOEXCEPTION_H

@@ -5,7 +5,8 @@
 #ifndef COIOTE_PROJECT_EXCEPTIONMANAGER_H
 #define COIOTE_PROJECT_EXCEPTIONMANAGER_H
 
-#import <exception>
+#include <exception>
+#include <fstream>
 
 
 class ExceptionManager {
@@ -13,12 +14,12 @@ public:
     /*
      * TODO WRITE DESCRIPTION HERE
      */
-    ExceptionManager(Exce);
+//    ExceptionManager(Exce);
 
     /*
      * TODO WRITE DESCRIPTION HERE
      */
-    int loadMatrix(ifstream inputFile);
+    int loadMatrix(std::ifstream inputFile);
     // TODO check why it makes the build fail
 
 
