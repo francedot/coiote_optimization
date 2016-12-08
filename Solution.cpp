@@ -168,6 +168,6 @@ int Solution::evaluate() {
 void Solution::print(bool screen, string path) {
     if (screen)
         for (int i = 0; i < cells.size(); i++)
-            cells[i].print(1);
+            cells[i].print(1, path);
     //todo print on output file
 }

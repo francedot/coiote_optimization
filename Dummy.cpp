@@ -9,13 +9,13 @@
  * This method fills the cost matrix with random numbers proportional to the distance between the cells
  * and the person types and updates the average cost per task for each cell.
  */
-static void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int personTypes) {
+static void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int peopleTypes) {
     int RANGE_MODIFIER = 2;
     int cost, diff, index = 0;
     for (int i = 0; i < cellsNumber; i++) {
         for (int j = 0; j < cellsNumber; j++) {
             for (int t = 0; t < timeSlots; t++) {
-                for (int m = 0; m < personTypes; m++) {
+                for (int m = 0; m < peopleTypes; m++) {
                     // Calculates diff to implement a locality in the random choice of costs
                     diff = (i < j) ? (j - i) : (i - j);
                     diff += 5;
@@ -34,13 +34,13 @@ static void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int t
  * to satisfy all the tasks in each cell.
  */
 static void
-Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlots, int personTypes, int minPersons,
+Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlots, int peopleTypes, int minPersons,
                         int maxPersons) {
     int persons;
     int MAX_RANGE = maxPersons - minPersons;
     for (int i = 0; i < cellsNumber; i++) {
         for (int t = 0; t < timeSlots; t++) {
-            for (int m = 0; m < personTypes; m++) {
+            for (int m = 0; m < peopleTypes; m++) {
                 persons = (int) (((double) rand()) / RAND_MAX) * MAX_RANGE;
                 persons += minPersons;
                 peopleMatrix->setValue(t, m, i, persons);

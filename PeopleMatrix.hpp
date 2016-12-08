@@ -8,6 +8,8 @@
 
 class PeopleMatrix {
 public:
+    PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber);
+
     int ***getPeopleMatrix();
 
     void setValue(int t, int m, int i, int value);

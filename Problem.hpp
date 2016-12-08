@@ -16,12 +16,14 @@ using namespace std;
 class Problem {
 
 public:
-    /*
-     * todo comments
-     */
+
     Problem(string inputPath, string outputPath);
 
+    Problem(int cellsNumber, int peopleTypes, int timePeriods);
+
     void load();
+
+    void dummyLoad();
 
     void printValues(bool screen = 0,
                      string path);                //stampa i valori delle obj function per le soluzioni delle popolazioni evidenziando l'elite
@@ -37,7 +39,7 @@ private:
     string inputPath;
     string outputPath;
     int cellsNumber;
-    int periodsNumber;
+    int timePeriods;
     int peopleTypes;
     int *totalTasks;
     Solution *population;

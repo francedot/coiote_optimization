@@ -21,10 +21,28 @@
 #include "util.hpp"
 
 /*
- * todo comments
+ * This constructor initializes the costs matrix and the two average and stnd dev arrays (for welford)
  */
-CostMatrix::CostMatrix() {
-
+CostMatrix::CostMatrix(int cellsNumber, int peopleTypes, int timePeriods) {
+    costs = new int ***[cellsNumber]();
+    for (int j = 0; j < cellsNumber; j++) {
+        costs[j] = new int **[cellsNumber]();
+        for (int i = 0; i < cellsNumber; i++) {
+            costs[j][i] = new int *[peopleTypes]();
+            for (int m = 0; m < peopleTypes; m++) {
+                costs[j][i][m] = new int[timePeriods]();
+                for (int t = 0; t < timePeriods; t++) {
+                    costs[j][i][m][t] = 0;
+                }
+            }
+        }
+    }
+    averageCostsPerTask = new double[cellsNumber]();
+    stdvCostsPerTask = new double[cellsNumber]();
+    for (int i = 0; i < cellsNumber; i++) {
+        averageCostsPerTask[i] = 0;
+        stdvCostsPerTask[i] = 0;
+    }
 }
 
 /*

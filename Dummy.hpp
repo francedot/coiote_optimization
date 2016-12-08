@@ -10,10 +10,10 @@
 
 class Dummy {
 public:
-    static void fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int personTypes);
+    static void fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlots, int peopleTypes);
 
     static void
-    fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlots, int personTypes, int minPersons,
+    fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlots, int peopleTypes, int minPersons,
                      int maxPersons);
 
     static int *allocateAndFillTasksArray(int size, int maxTasks);

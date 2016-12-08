@@ -15,7 +15,7 @@ class CostMatrix {
 
 public:
 
-    CostMatrix();
+    CostMatrix(int cellsNumber, int peopleTypes, int timePeriods);
     /*
      * todo comments
      */
@@ -54,9 +54,9 @@ private:
     /*
      * todo comments
      */
-//    int size;               // Size of the square matrix
-    int ****costs;
-    double *averageCostsPerTask;   // Array of size N of avg costs. See "updateAverageCostsPerTask()" for more info
+//    int size;                       // Size of the square matrix
+    int ****costs;                  // Indexes are j, i, m, t, in this order
+    double *averageCostsPerTask;    // Array of size N of avg costs. See "updateAverageCostsPerTask()" for more info
     double *stdvCostsPerTask;
 };
 

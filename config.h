@@ -16,7 +16,7 @@ typedef struct problemData {
     string inputPath;
     string outputPath;
     int cellsNumber;
-    int periodsNumber;
+    int timePeriods;
     int peopleTypes;
     int timesNumber;
     int *totalTasks;

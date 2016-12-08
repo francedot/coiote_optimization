@@ -2,6 +2,7 @@
  * SolutionCell.cpp
  */
 
+#include <iomanip>
 #include "SolutionCell.hpp"
 
 using namespace std;
@@ -98,7 +99,10 @@ int SolutionCell::setTime(int t) {
  */
 void SolutionCell::print(bool screen, string path) {
     if (screen) {
-        cout << i << ";" << j << ";" << m << ";" << t << ";" << x << endl;
+        cout << "i = " << setw(4) << i << "; j = " << setw(4) << j << "; m = " << setw(4) << m << "; t = " << setw(4)
+             << t << "; x = " << setw(4) << x << "." << endl;
     }
     //todo print on output file
 }
+
+
