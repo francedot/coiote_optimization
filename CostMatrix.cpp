@@ -96,20 +96,19 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int r
     // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
 
     vector<CostMatrix::CostCoordinates> *minsVector = new vector<CostMatrix::CostCoordinates>;
-
     double maxDistanceFromMin = 0.5;
-
     int peopleTemp;
     for (int t_ = 0; t_ < timePeriods; t_++) {
         for (int i_ = 0; i_ < cellsNumber; i_++) {
+            if (i_ == j) continue;
             for (int m_ = 0; m_ < peopleTypes; m_++) {
                 if ((peopleTemp = people[t_][m_][i_]) > 0) {
-                    if (this->costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
+                    if (costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
                         CostMatrix::CostCoordinates *currentCoordinates = new CostMatrix::CostCoordinates();
                         currentCoordinates->j = j;
                         currentCoordinates->i = i_;
-                        currentCoordinates->m = t_;
-                        currentCoordinates->t = m_;
+                        currentCoordinates->m = m_;
+                        currentCoordinates->t = t_;
                         minsVector->push_back(*currentCoordinates);
                         if ((remainingTasksForJ -= (m_ + 1) * peopleTemp) <= 0) {
                             /*
@@ -117,19 +116,23 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int r
                              * computational cost of extending the reasarch at the end (last
                              * cells)
                              */
+
+                            /*
                             if (remainingTasksForJ != 0) {
                                 minsVector->pop_back();
                                 remainingTasksForJ += (m_ + 1) * peopleTemp;
                             } else {
                                 return minsVector;
                             }
+                             */
+
                             /*
                              * Solution 2: here the remainingTasks might be negative, in the
                              * sense that a person of type 2 [1] or 3 [2] is being used for
                              * less than the max jobs that could accomplish. The advantage is
                              * that the research is the minimum for a given distanceFromAvg
                              */
-//                            return minsVector;
+                            return minsVector;
                         }
                     }
                 }
@@ -157,13 +160,12 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
 
     double maxDistanceFromMin = 0.5;
 
-    int peopleTemp;
     for (int t_ = 0; t_ < timePeriods; t_++) {
         for (int i_ = 0; i_ < cellsNumber; i_++) {
             for (int m_ = 0; m_ < peopleTypes; m_++) {
-                if ((peopleTemp = people[t_][m_][i_]) > 0) {
+                if ((people[t_][m_][i_]) > 0) {
                     if (this->costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
-                        CostMatrix::CostCoordinates *currentCoordinates = new CostMatrix::CostCoordinates();
+                        CostCoordinates *currentCoordinates = new CostCoordinates();
                         currentCoordinates->j = j;
                         currentCoordinates->i = i_;
                         currentCoordinates->m = t_;
@@ -187,7 +189,7 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
                              * less than the max jobs that could accomplish. The advantage is
                              * that the research is the minimum for a given distanceFromAvg
                              */
-//                            return minsVector;
+//                           return minsVector;
                         }
                     }
                 }
@@ -236,4 +238,19 @@ void CostMatrix::updateAvgCostsPerTask(int j, int newValue, long index) {
 //int CostMatrix::getSize() {
 //    return size;
 //}
+
+
+void CostMatrix::print() {
+    for (int t = 0; t < timePeriods; t++) {
+        for (int m = 0; m < peopleTypes; m++) {
+            std::cout << t << " " << m << std::endl;
+            for (int j = 0; j < cellsNumber; j++) {
+                for (int i = 0; i < cellsNumber; i++) {
+                    std::cout << costs[j][i][m][t] << " ";
+                }
+                std::cout << std::endl;
+            }
+        }
+    }
+}
 

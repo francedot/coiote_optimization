@@ -50,6 +50,8 @@ public:
 
     void updateAvgCostsPerTask(int j, int newValue, long index);
 
+    void print();
+
 private:
     /*
      * todo comments

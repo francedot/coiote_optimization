@@ -19,7 +19,7 @@ void Dummy::fillCostMatrix(CostMatrix *costMatrix, int cellsNumber, int timeSlot
                     // Calculates diff to implement a locality in the random choice of costs
                     diff = (i < j) ? (j - i) : (i - j);
                     diff += 5;
-                    cost = (int) ((((double) rand()) / RAND_MAX) * RANGE_MODIFIER * diff * (m + 1));
+                    cost = 1 + (int) ((((double) rand()) / RAND_MAX) * RANGE_MODIFIER * diff * (m + 1));
                     costMatrix->setValue(j, i, m, t, cost);
                     costMatrix->updateAvgCostsPerTask(j, (cost / (m + 1)), index++);
                 }
@@ -41,7 +41,7 @@ Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlo
     for (int i = 0; i < cellsNumber; i++) {
         for (int t = 0; t < timeSlots; t++) {
             for (int m = 0; m < peopleTypes; m++) {
-                persons = (int) (((double) rand()) / RAND_MAX) * MAX_RANGE;
+                persons = rand() % MAX_RANGE;
                 persons += minPersons;
                 peopleMatrix->setValue(t, m, i, persons);
             }
@@ -54,10 +54,9 @@ Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlo
  * When deallocating, remember to use the "delete[]" operator.
  */
 int *Dummy::allocateAndFillTasksArray(int size, int maxTasks) {
-    int *tasks = new int[size]();
-    for (int i = 0; i < size; i++) {
-        tasks[i] = (int) (((double) rand()) / RAND_MAX) * maxTasks;
-    }
+    int tasks[size];
+    for (int i = 0; i < size; i++)
+        tasks[i] = rand() % maxTasks + 10;
     return tasks;
 }
 

@@ -36,6 +36,7 @@ Problem::Problem(int cellsNumber, int peopleTypes, int timePeriods) {
     costs = new CostMatrix(cellsNumber, peopleTypes, timePeriods);
     people = new PeopleMatrix(timePeriods, peopleTypes, cellsNumber);
     dummyLoad();
+
 }
 
 /*
@@ -71,10 +72,11 @@ void Problem::load() {
  */
 void Problem::dummyLoad() {
     cout << "dummyLoad() called\n";
-    int MAX_TASKS = 80;
+    int MAX_TASKS = 50;
     Dummy::fillCostMatrix(costs, cellsNumber, timePeriods, peopleTypes);
-    Dummy::fillPeopleMatrix(people, cellsNumber, timePeriods, peopleTypes, MAX_TASKS, MAX_TASKS * 5);
+    Dummy::fillPeopleMatrix(people, cellsNumber, timePeriods, peopleTypes, MAX_TASKS, MAX_TASKS * 2);
     totalTasks = Dummy::allocateAndFillTasksArray(cellsNumber, MAX_TASKS);
+
 }
 
 /*
@@ -98,7 +100,7 @@ int Problem::solve(int populationDimension, int eliteDimension) {
      * below a population of instances of standard Simulation Annealing is declared, each one with his current solution stored inside,
      * provided in the first wave of the algorithm by making a copy (with copy-constructor) of the initial solution generated above;
      */
-    SimulatedAnnealing simAnnealings[populationDimension];
+    SimulatedAnnealing *simAnnealings = new SimulatedAnnealing[populationDimension]();
 
     //First wave is performed separatly to be able to assign each instance of Simulated Annealing his own starting solution
     for (int i = 0; i < populationDimension; i++) {
@@ -131,6 +133,7 @@ int Problem::solve(int populationDimension, int eliteDimension) {
             stableWaves = 0;
         } else stableWaves++;
     }
+    currentBestSolution->print(1);
     return 0;
 }
 

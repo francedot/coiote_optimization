@@ -6,6 +6,7 @@
 #define Solution_hpp
 
 #include <stdio.h>
+#include <iostream>
 #include <vector>
 #include "SolutionCell.hpp"
 #include "CostMatrix.hpp"
@@ -47,6 +48,8 @@ private:
                           CostMatrix *costs, int N);
 
     int totalCost;
+
+    void printTasks(int *remainingTask, int *originalTask, int N);
 
 };
 
