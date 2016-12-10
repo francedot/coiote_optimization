@@ -23,7 +23,7 @@ int main(int argc, const char *argv[]) {
 
     int cellsNumber = 30;
     int peopleTypes = 3;
-    int timePeriods = 10;
+    int timePeriods = 20;
 
     int populationDimension = 20;
     int eliteDimension = 5;

@@ -55,6 +55,7 @@ int CostMatrix::loadMatrix(istream inputFile) {
     return 0;
 }
 
+
 //void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
 //    /*
 //     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
@@ -85,7 +86,8 @@ int CostMatrix::loadMatrix(istream inputFile) {
  * TODO: Description
  * Note: Remember to delete the returned vector, which is allocated inside
  */
-vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, int ***people) {
+vector<CostMatrix::CostCoordinates> *
+CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -102,7 +104,7 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int r
         for (int i_ = 0; i_ < cellsNumber; i_++) {
             if (i_ == j) continue;
             for (int m_ = 0; m_ < peopleTypes; m_++) {
-                if ((peopleTemp = people[t_][m_][i_]) > 0) {
+                if ((peopleTemp = people->getPeople(t_, m_, i_)) > 0) {
                     if (costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
                         CostMatrix::CostCoordinates *currentCoordinates = new CostMatrix::CostCoordinates();
                         currentCoordinates->j = j;
@@ -146,7 +148,7 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int r
  * Note: Remember to delete the returned vector, which is allocated inside
  */
 vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ,
-                                                                               int ***people) {
+                                                                               PeopleMatrix *people) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -159,11 +161,12 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
     vector<CostMatrix::CostCoordinates> *minsVector = new vector<CostMatrix::CostCoordinates>;
 
     double maxDistanceFromMin = 0.5;
+    int peopleTemp;
 
     for (int t_ = 0; t_ < timePeriods; t_++) {
         for (int i_ = 0; i_ < cellsNumber; i_++) {
             for (int m_ = 0; m_ < peopleTypes; m_++) {
-                if ((people[t_][m_][i_]) > 0) {
+                if ((peopleTemp = people->getPeople(t_, m_, i_)) > 0) {
                     if (this->costs[j][i_][m_][t_] / (m_ + 1) <= (maxDistanceFromMin * averageCostsPerTask[j])) {
                         CostCoordinates *currentCoordinates = new CostCoordinates();
                         currentCoordinates->j = j;

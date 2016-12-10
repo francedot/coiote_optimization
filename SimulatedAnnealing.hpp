@@ -21,9 +21,9 @@ public:
 
     void resetTemperature();
 
-    void runStep(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+    void runStep(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
-    void run(int keptSolCells, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N, int steps);
+    void run(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N, int steps);
 
 private:
     int currentTemperature;

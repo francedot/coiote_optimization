@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include "PeopleMatrix.hpp"
 
 using namespace std;
 
@@ -33,10 +34,10 @@ public:
 //    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
     vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCost(int j, int remainingTasksForJ, int ***people);
+    getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people);
 
     vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, int ***people);
+    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, PeopleMatrix *people);
 
     int getCost(int j, int i, int m, int t);
 

@@ -47,6 +47,7 @@ Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlo
             }
         }
     }
+
 }
 
 /*
@@ -54,7 +55,7 @@ Dummy::fillPeopleMatrix(PeopleMatrix *peopleMatrix, int cellsNumber, int timeSlo
  * When deallocating, remember to use the "delete[]" operator.
  */
 int *Dummy::allocateAndFillTasksArray(int size, int maxTasks) {
-    int tasks[size];
+    int *tasks = new int[size]();
     for (int i = 0; i < size; i++)
         tasks[i] = rand() % maxTasks + 10;
     return tasks;

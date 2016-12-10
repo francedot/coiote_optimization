@@ -10,6 +10,7 @@
 #include <vector>
 #include "SolutionCell.hpp"
 #include "CostMatrix.hpp"
+#include "PeopleMatrix.hpp"
 
 using namespace std;
 
@@ -24,13 +25,14 @@ public:
     Solution(const Solution &toCopy);
 
     vector<Solution *> *
-    generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+    generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+                         int N);
 
-    void generateInitialSolution(int *remainingTask, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+    void generateInitialSolution(int *remainingTask, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
     void addSolutionCell(SolutionCell *toAdd);
 
-    Solution *generateNeighbor(int kept, int *tasks, int sizeOfTasks, int ***people, CostMatrix *costs, int N);
+    Solution *generateNeighbor(int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
     SolutionCell getCell(int n);
 
@@ -44,12 +46,12 @@ private:
      */
     vector<SolutionCell> cells;
 
-    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, int ***people,
+    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, PeopleMatrix *people,
                           CostMatrix *costs, int N);
 
     int totalCost;
 
-    void printTasks(int *remainingTask, int *originalTask, int N);
+    void printTasks(int *remainingTask, int N);
 
 };
 
