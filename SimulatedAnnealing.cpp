@@ -48,8 +48,7 @@ void SimulatedAnnealing::resetTemperature() {
  * At each steps it calls the function "runStep(...)" that runs the heuristic just once.
  * (After it ends, the caller might decrement the temperature)
  */
-void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
-                             int N, int steps) {
+void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N, int steps) {
     std::cout << "run(...) called" << std::endl;
     for (int step = 0; step < steps; step++) {
         runStep(keptSolCells, tasks, sizeOfTasks, people, costs, N);
@@ -61,9 +60,7 @@ void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, Peop
  * This method runs a single step of the SimulatedAnnealing by generating a neighboor until the selection logic
  * selects and replaces the "currentSolution" of this SimulatedAnnealing instance.
  */
-void
-SimulatedAnnealing::runStep(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
-                            int N) {
+void SimulatedAnnealing::runStep(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
     std::cout << "runStep(...) called -> ";
     Solution *newSol;
     for (int instance = 0; instance < 20; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)

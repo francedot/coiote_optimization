@@ -22,7 +22,6 @@ public:
 
     int getPeople(int t, int m, int i);
 
-
     void printPeople();
 
 private:

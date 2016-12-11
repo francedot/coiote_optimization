@@ -4,6 +4,9 @@
 
 #include "PeopleMatrix.hpp"
 
+/*
+ * constructor: allocate memory and initialize values for peopleMatrix
+ */
 PeopleMatrix::PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber) {
 
     this->cellsNumber = cellsNumber;
@@ -22,6 +25,9 @@ PeopleMatrix::PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber) {
     }
 }
 
+/*
+ * load people matrix from inputFileStream
+ */
 int PeopleMatrix::load(ifstream *inputFileStream) {
     string line;    // contains a line of the Input file
     string word;    // contains a single word (into a line)
@@ -63,17 +69,22 @@ void PeopleMatrix::setValue(int t, int m, int i, int value) {
     peopleMatrix[t][m][i] = value;
 }
 
+/*
+ * It returns the value of the people matrix corrisponding to time period "t", person type "m" and cell "i".
+ */
 int PeopleMatrix::getPeople(int t, int m, int i) {
     return peopleMatrix[t][m][i];
 }
 
+/*
+ * screen print of the people matrix
+ */
 void PeopleMatrix::printPeople() {
-    cout << timePeriods << " " << peopleTypes << " " << cellsNumber << endl;
-    for (int time = 0; time < timePeriods; time++) {
-        for (int type = 0; type < peopleTypes; type++) {
-            cout << time << " " << type << endl;
-            for (int cell = 0; cell < cellsNumber; cell++)
-                cout << peopleMatrix[time][type][cell] << " ";
+    for (int t = 0; t < timePeriods; t++) {
+        for (int m = 0; m < peopleTypes; m++) {
+            cout << m << " " << t << endl;
+            for (int i = 0; i < cellsNumber; i++)
+                cout << peopleMatrix[t][m][i] << " ";
             cout << endl;
         }
     }

@@ -7,7 +7,7 @@
 using namespace std;
 
 /*
- * todo comments
+ * todo da eliminare ?
  */
 Solution::Solution() {
 
@@ -28,10 +28,7 @@ Solution::Solution(const Solution &toCopy) {
  * null implica n = 0
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
-void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int *tasks, int sizeOfTasks,
-                                PeopleMatrix *people,
-                                CostMatrix *costs, int N) {
-
+void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
     // People is a matrix Time x TypePerson x CellNumber
     // TODO: Add exception / full control of passed parameters
     int *remainingTask = new int[sizeOfTasks];
@@ -68,15 +65,14 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
                     SolutionCell cellToAdd(*it);
                     this->cells.insert(this->cells.begin(), cellToAdd);
                     remainingTask[cellToAdd.getJ()] -= cellToAdd.getX() * (cellToAdd.getType() + 1);
-//                people[cellToAdd.getTime()][cellToAdd.getType()][cellToAdd.getI()] -= cellToAdd.getX();
-//                totalCost += costs->getCost(cellToAdd.getI(), cellToAdd.getJ(), cellToAdd.getType(), cellToAdd.getTime());
-//                  addSolutionCell(new SolutionCell(*it));
+//                    people[cellToAdd.getTime()][cellToAdd.getType()][cellToAdd.getI()] -= cellToAdd.getX();
+//                    totalCost += costs->getCost(cellToAdd.getI(), cellToAdd.getJ(), cellToAdd.getType(), cellToAdd.getTime());
+//                    addSolutionCell(new SolutionCell(*it));
                     remainingTask[it->getJ()] -= (it->getX() * (it->getType() + 1));
                     if (remainingTask[it->getJ()] < 0)
                         remainingTask[it->getJ()] = 0;
-                    //                   printTasks(remainingTask, N);
-                    people->setValue(it->getTime(), it->getType(), it->getI(),
-                                     (people->getPeople(it->getTime(), it->getType(), it->getI()) - it->getX()));
+//                    printTasks(remainingTask, N);
+                    people->setValue(it->getTime(), it->getType(), it->getI(), (people->getPeople(it->getTime(), it->getType(), it->getI()) - it->getX()));
                     totalCost += costs->getCost(it->getI(), it->getJ(), it->getType(), it->getTime()) * it->getX();
                     kept++;
                 }
@@ -116,8 +112,7 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
 /*
  * todo comments
  */
-void
-Solution::generateInitialSolution(int *remainingTask, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
+void Solution::generateInitialSolution(int *remainingTask, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
     populateSolution(nullptr, 0, remainingTask, sizeOfTasks, people, costs, N);
 }
 
@@ -139,17 +134,15 @@ void Solution::addSolutionCell(SolutionCell *toAdd) {
     return;
 }
 
-vector<Solution *> *Solution::generateNeighborhood(int size, int keptSolCells, int *tasks, int sizeOfTasks,
-                                                   PeopleMatrix *people, CostMatrix *costs, int N) {
-    vector<Solution *> *neighborhood = new vector<Solution *>(size);
+vector<Solution *> *Solution::generateNeighborhood(int size, int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
+    vector<Solution *> *neighborhood = new vector<Solution *>((unsigned long) size);
     for (int i = 0; i < size; i++) {
         neighborhood->push_back(generateNeighbor(keptSolCells, tasks, sizeOfTasks, people, costs, N));
     }
     return neighborhood; //Use delete[] to delete this array;
 }
 
-Solution *Solution::generateNeighbor(int keptSolCells, int *tasks, int sizeOfTasks,
-                                     PeopleMatrix *people, CostMatrix *costs, int N) {
+Solution *Solution::generateNeighbor(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
     Solution *newSol = new Solution();
     newSol->populateSolution(this, keptSolCells, tasks, sizeOfTasks, people, costs, N);
     return newSol;

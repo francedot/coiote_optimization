@@ -2,21 +2,6 @@
  * CostMatrix.cpp
  */
 
-/*
- * TODO [DAVIDE]:
- *                Dando per scontato che la CostMatrix abbia i parametri in quest'ordine:
- *                [j][i][m][t]. Per la funzione getMinimumCost vorremmo che in fase di
- *                lettura per ogni j venisse salvata la media di ogni costo <i,m,t>.
- *                La classe CostMatrix deve avere un array di size j in cui ogni elemento
- *                ci sia la media di tutti i costi <i,m,t>.
- *                Sembra un impiccio ma porta ad un'ottimizzazione sostanziale (vedi getMinimumCost)
- *
- *                Per il calcolo della media di un enorme numero di elementi letti volta per volta
- *                abbiamo scritto la funzione welford in util.cpp
- *
- *
-*/
-
 #include "CostMatrix.hpp"
 #include "util.hpp"
 
@@ -48,6 +33,9 @@ CostMatrix::CostMatrix(int cellsNumber, int peopleTypes, int timePeriods) {
     }
 }
 
+/*
+ * load the cost matrix from the inputFileStream
+ */
 int CostMatrix::load(ifstream *inputFileStream) {
     string line;    // contains a line of the Input file
     string word;    // contains a single word (into a line)
@@ -73,7 +61,20 @@ int CostMatrix::load(ifstream *inputFileStream) {
     return 1;
 }
 
-
+/*
+ * TODO [DAVIDE]:
+ *                Dando per scontato che la CostMatrix abbia i parametri in quest'ordine:
+ *                [j][i][m][t]. Per la funzione getMinimumCost vorremmo che in fase di
+ *                lettura per ogni j venisse salvata la media di ogni costo <i,m,t>.
+ *                La classe CostMatrix deve avere un array di size j in cui ogni elemento
+ *                ci sia la media di tutti i costi <i,m,t>.
+ *                Sembra un impiccio ma porta ad un'ottimizzazione sostanziale (vedi getMinimumCost)
+ *
+ *                Per il calcolo della media di un enorme numero di elementi letti volta per volta
+ *                abbiamo scritto la funzione welford in util.cpp
+ *
+ *
+*/
 //void CostMatrix::getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize) {
 //    /*
 //     *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
@@ -82,7 +83,7 @@ int CostMatrix::load(ifstream *inputFileStream) {
 //     *      Se sai qual è il costo medio cAvg, ad ogni iterazione prendi il primo
 //     *      elemento elem di costMatrix <= (0.5 * cAvg)
 //     */
-//    // TODO: Tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
+//    // tenere traccia di tutti i "minimi" richiesti leggendo una sola volta
 //    double maxDistanceFromMin = 0.5;
 //    for (int t_ = 0; t_ < tSize; t_++) {
 //        for (int m_ = 0; m_ < mSize; m_++) {
@@ -104,8 +105,7 @@ int CostMatrix::load(ifstream *inputFileStream) {
  * TODO: Description
  * Note: Remember to delete the returned vector, which is allocated inside
  */
-vector<CostMatrix::CostCoordinates> *
-CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people) {
+vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -165,8 +165,7 @@ CostMatrix::getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *peop
  * TODO: Description
  * Note: Remember to delete the returned vector, which is allocated inside
  */
-vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ,
-                                                                               PeopleMatrix *people) {
+vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(int j, int remainingTasksForJ, PeopleMatrix *people) {
     /*
      *      Visto che Costmatrix::averageCosts[j] ha la media dei costi per
      *      j, posso evitare di cercare ogni volta tutta la matrice prendendo il primo
@@ -219,6 +218,16 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
     }
 }
 
+/*
+ * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
+ */
+void CostMatrix::setValue(int j, int i, int m, int t, int value) {
+    costs[j][i][m][t] = value;
+}
+
+/*
+ * It returns the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
+ */
 int CostMatrix::getCost(int j, int i, int m, int t) {
     return costs[j][i][m][t];
 }
@@ -228,20 +237,6 @@ int CostMatrix::getCost(int j, int i, int m, int t) {
  */
 int CostMatrix::getAvgCostsPerTask(int j) {
     return (int) averageCostsPerTask[j];
-}
-
-/*
- * It returns the internal representation of the cost matrix. Should be used with caution.
- */
-int ****CostMatrix::getMatrix() {
-    return costs;
-}
-
-/*
- * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
- */
-void CostMatrix::setValue(int j, int i, int m, int t, int value) {
-    costs[j][i][m][t] = value;
 }
 
 /*
@@ -256,15 +251,24 @@ void CostMatrix::updateAvgCostsPerTask(int j, int newValue, long index) {
     welford(newValue, averageCostsPerTask + j, stdvCostsPerTask + j, index);
 }
 
+/*
+ * It returns the internal representation of the cost matrix. Should be used with caution.
+ */
+int ****CostMatrix::getMatrix() {
+    return costs;
+}
+
 //int CostMatrix::getSize() {
 //    return size;
 //}
 
-
+/*
+ * screen print of the cost matrix
+ */
 void CostMatrix::print() {
     for (int t = 0; t < timePeriods; t++) {
         for (int m = 0; m < peopleTypes; m++) {
-            std::cout << t << " " << m << std::endl;
+            std::cout << m << " " << t << std::endl;
             for (int j = 0; j < cellsNumber; j++) {
                 for (int i = 0; i < cellsNumber; i++) {
                     std::cout << costs[j][i][m][t] << " ";
@@ -274,4 +278,3 @@ void CostMatrix::print() {
         }
     }
 }
-

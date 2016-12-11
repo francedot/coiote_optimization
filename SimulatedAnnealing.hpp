@@ -8,6 +8,7 @@
 #include "Solution.hpp"
 
 class SimulatedAnnealing {
+
 public:
     SimulatedAnnealing();
 

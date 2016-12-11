@@ -1,7 +1,6 @@
 /*
  * Useful/general-use functions
- * TODO: Valuta se inserirle altrove, in base alla funzione
-*/
+ */
 
 /*
  * welford: Computes average and standard variation of possibly huge

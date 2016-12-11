@@ -3,9 +3,11 @@
  */
 
 #include "Problem.hpp"
-#include "config.h"
 
 using namespace std;
+
+int _populationDimension = 20;
+int _eliteDimension = 5;
 
 /*
  * CONFIGURATIONS

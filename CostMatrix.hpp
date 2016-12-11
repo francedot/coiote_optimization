@@ -17,7 +17,6 @@ using namespace std;
 class CostMatrix {
 
 public:
-
     /*
      * The following struct contains the four coordinates of an element of the costs matrix.
      * It is used as a return type for the vector of coordinates of least cost for a certain task cells.
@@ -34,23 +33,21 @@ public:
 
 //    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
-    vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people);
+    vector<CostMatrix::CostCoordinates> *getMinimumTaskCost(int j, int remainingTasksForJ, PeopleMatrix *people);
 
-    vector<CostMatrix::CostCoordinates> *
-    getMinimumTaskCostDiversified(int j, int remainingTasksForJ, PeopleMatrix *people);
-
-    int getCost(int j, int i, int m, int t);
-
-//    int getSize();
-
-    int getAvgCostsPerTask(int j);
-
-    int ****getMatrix();
+    vector<CostMatrix::CostCoordinates> *getMinimumTaskCostDiversified(int j, int remainingTasksForJ, PeopleMatrix *people);
 
     void setValue(int j, int i, int m, int t, int value);
 
+    int getCost(int j, int i, int m, int t);
+
+    int getAvgCostsPerTask(int j);
+
     void updateAvgCostsPerTask(int j, int newValue, long index);
+
+    int ****getMatrix();
+
+//    int getSize();
 
     void print();
 
@@ -60,7 +57,7 @@ private:
     int timePeriods;                // Number of time periods
     int peopleTypes;                // Number of types of people
     double *averageCostsPerTask;    // Array of size N of avg costs. See "updateAverageCostsPerTask()" for more info
-    double *stdvCostsPerTask;
+    double *stdvCostsPerTask;       // todo description
 };
 
 #endif /* CostMatrix_hpp */

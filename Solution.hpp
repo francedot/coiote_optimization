@@ -25,9 +25,7 @@ public:
 
     Solution(const Solution &toCopy);
 
-    vector<Solution *> *
-    generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
-                         int N);
+    vector<Solution *> *generateNeighborhood(int size, int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
     void generateInitialSolution(int *remainingTask, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
@@ -47,13 +45,11 @@ private:
      */
     vector<SolutionCell> cells;
 
-    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, PeopleMatrix *people,
-                          CostMatrix *costs, int N);
+    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
     int totalCost;
 
     void printTasks(int *remainingTask, int N);
-
 };
 
 #endif /* Solution_hpp */
