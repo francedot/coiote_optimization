@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+
 #include "SolutionCell.hpp"
 #include "CostMatrix.hpp"
 #include "PeopleMatrix.hpp"

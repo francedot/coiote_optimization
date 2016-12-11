@@ -5,7 +5,6 @@
 #ifndef SolutionCell_hpp
 #define SolutionCell_hpp
 
-#include "SolutionCell.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>

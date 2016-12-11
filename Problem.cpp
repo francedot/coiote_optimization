@@ -2,11 +2,9 @@
  * Problem.cpp
  */
 
+//#include "Dummy.hpp"
 #include "Problem.hpp"
-#include "Dummy.hpp"
-#include "Exceptions/Headers/CoioteException.hpp"
-#include <fstream>
-#include <sstream>
+//#include "Exceptions/Headers/CoioteException.hpp"
 
 using namespace std;
 
@@ -16,69 +14,181 @@ using namespace std;
 Problem::Problem(string inputPath, string outputPath) {
     this->inputPath = inputPath;
     this->outputPath = outputPath;
-    load();
-    // TODO: i parametri sottostanti andrebbero riempiti mentre si legge il file di input (magari direttamente nella funzione "load"?)
+
+    // following attributes are loaded by load()
     cellsNumber = 0;
-    peopleTypes = 0;
     timePeriods = 0;
+    peopleTypes = 0;
+    tasksUserCanDo = nullptr;
+    costs = nullptr;
+    totalTasks = nullptr;
+    people = nullptr;
+
+    this->load();
+
+    //printInputFileRead();
+}
+
+void Problem::load() {
+    string line;    // contains a line of the Input file
+    string word;    // contains a single word (into a line)
+    int m;          // index for peopleTypes
+    int i;          // index for cellsNumber
+
+    // open input file
+    ifstream inputFileStream(Problem::inputPath.c_str());
+
+    if (!inputFileStream.is_open()) {
+        // todo x francesco: lancia eccezione
+        //throw new CoioteException("Error: unable to open " + Problem::inputPath);
+
+        cout << "Error: unable to open " + Problem::inputPath + "\n";
+        return;
+    }
+
+    /*
+     * LOADING cellsNumber, timePeriods, peopleTypes
+     */
+    getline(inputFileStream, line);
+    istringstream inputStringStream1(line);
+
+    inputStringStream1 >> word;
+    cellsNumber = atoi(word.c_str());
+    inputStringStream1 >> word;
+    timePeriods = atoi(word.c_str());
+    inputStringStream1 >> word;
+    peopleTypes = atoi(word.c_str());
+
+    // jump empty line
+    getline(inputFileStream, line);
+
+    /*
+     * LOADING tasksUserCanDo
+     */
+    getline(inputFileStream, line);
+    istringstream inputStringStream2(line);
+    tasksUserCanDo = new int[peopleTypes];
+
+    for (m = 0; m < peopleTypes; m++) {
+        inputStringStream2 >> word;
+        tasksUserCanDo[m] = atoi(word.c_str());
+    }
+
+    // jump empty line
+    getline(inputFileStream, line);
+
+    /*
+     * LOADING costs
+     */
     costs = new CostMatrix(cellsNumber, peopleTypes, timePeriods);
-    people = new PeopleMatrix(timePeriods, peopleTypes, cellsNumber);
+    if (!costs->load(&inputFileStream)) {
+        // todo x francesco: lancia eccezione
+        //throw new CoioteException("Error: unable to load cost matrix");
+
+        cout << "Error: unable to load cost matrix\n";
+        return;
+    }
+
+    // jump the empty line
+    getline(inputFileStream, line);
+
+    /*
+      * LOADING totalTasks
+      */
+    getline(inputFileStream, line);
+    istringstream inputStringStream3(line);
+    totalTasks = new int[cellsNumber];
+
+    for (i = 0; i < cellsNumber; i++) {
+        inputStringStream2 >> word;
+        totalTasks[i] = atoi(word.c_str());
+    }
+
+    /*
+     * LOADING people
+     */
+    this->people = new PeopleMatrix(timePeriods, peopleTypes, cellsNumber);
+    if (!people->load(&inputFileStream)) {
+        // todo x francesco: lancia eccezione
+        //throw new CoioteException("Error: unable to load cost matrix");
+
+        cout << "Error: unable to load cost matrix\n";
+        return;
+    }
+
+    return;
+}
+
+// test function to print read file
+void Problem::printInputFileRead () {
+    // stampa di prova dei dati letti
+    ofstream outputFileStream("/home/riccardo/ClionProjects/coiote_optimization/Resources/Output/test.txt");
+    int m, i, j, t, ****costMatrix, ***peopleMatrix;
+
+    outputFileStream << cellsNumber << " " << timePeriods << " " << peopleTypes << "\n\n";
+
+    for (m = 0; m < peopleTypes; m++) {
+        outputFileStream << tasksUserCanDo[m] << " ";
+    }
+    outputFileStream << "\n\n";
+
+    costMatrix = costs->getMatrix();
+    for (m = 0; m < peopleTypes; m++) {
+        for (t = 0; t < timePeriods; t++) {
+            outputFileStream << m << " " << t << "\n";
+            for (i = 0; i < cellsNumber; i++) {
+                for (j = 0; j < cellsNumber; j++) {
+                    outputFileStream << costMatrix[j][i][m][t] << " ";
+                }
+            }
+            outputFileStream << "\n";
+        }
+    }
+    outputFileStream << "\n";
+
+    for (i = 0; i < cellsNumber; i++) {
+        outputFileStream << totalTasks[i] << " ";
+    }
+    outputFileStream << "\n\n";
+
+    peopleMatrix = people->getPeopleMatrix();
+    for (m = 0; m < peopleTypes; m++) {
+        for (t = 0; t < timePeriods; t++) {
+            outputFileStream << m << " " << t << "\n";
+            for (i = 0; i < cellsNumber; i++) {
+                outputFileStream << peopleMatrix[t][m][i] << " ";
+            }
+            outputFileStream << "\n";
+        }
+    }
+    outputFileStream << "\n";
+    outputFileStream.close();
 }
 
 /*
  * The following constructor is temporary, it is used for testing the program before the loader implemmentation,
  * where the parameters are hard-coded and the data is generated by the Dummy class functions.
  */
-Problem::Problem(int cellsNumber, int peopleTypes, int timePeriods) {
-    this->cellsNumber = cellsNumber;
-    this->peopleTypes = peopleTypes;
-    this->timePeriods = timePeriods;
-    costs = new CostMatrix(cellsNumber, peopleTypes, timePeriods);
-    people = new PeopleMatrix(timePeriods, peopleTypes, cellsNumber);
-    dummyLoad();
-
-}
-
-/*
- * load Input file. By loading the inputFiles it also reads problem parameters such as cellsNumber, etc., which are
- * needed by the constructor Problem() to allocate it's fields. (Maybe it could become private and called by the
- * constructor itself?)
- */
-void Problem::load() {
-    string line; // contains a line of the Input file
-    string word; // contains a single word (into a line)
-
-    // open Input file
-    ifstream inputFileStream(Problem::inputPath.c_str());
-
-    if (!inputFileStream.is_open()) {
-        // todo lancia eccezione
-        throw new CoioteException("Error: unable to open " + Problem::inputPath);
-    }
-
-    /*
-     * read first line: cellsNumber periodsNumber peopleTypes
-     */
-    getline(inputFileStream, line);
-    istringstream inputStringStream(line);
-
-    inputStringStream >> word;
-
-    return;
-}
+//Problem::Problem(int cellsNumber, int peopleTypes, int timePeriods) {
+//    this->cellsNumber = cellsNumber;
+//    this->peopleTypes = peopleTypes;
+//    this->timePeriods = timePeriods;
+//    costs = new CostMatrix(cellsNumber, peopleTypes, timePeriods);
+//    people = new PeopleMatrix(timePeriods, peopleTypes, cellsNumber);
+//    dummyLoad();
+//}
 
 /*
  * Just a temporary method that fills the problem data with randomly generated data
  */
-void Problem::dummyLoad() {
-    cout << "dummyLoad() called\n";
-    int MAX_TASKS = 50;
-    Dummy::fillCostMatrix(costs, cellsNumber, timePeriods, peopleTypes);
-
-    Dummy::fillPeopleMatrix(people, cellsNumber, timePeriods, peopleTypes, MAX_TASKS, MAX_TASKS * 2);
-    totalTasks = Dummy::allocateAndFillTasksArray(cellsNumber, MAX_TASKS);
-
-}
+//void Problem::dummyLoad() {
+//    cout << "dummyLoad() called\n";
+//    int MAX_TASKS = 50;
+//    Dummy::fillCostMatrix(costs, cellsNumber, timePeriods, peopleTypes);
+//
+//    Dummy::fillPeopleMatrix(people, cellsNumber, timePeriods, peopleTypes, MAX_TASKS, MAX_TASKS * 2);
+//    totalTasks = Dummy::allocateAndFillTasksArray(cellsNumber, MAX_TASKS);
+//}
 
 /*
  * generate initial solution and solve the problemi with population-based simulated annealing

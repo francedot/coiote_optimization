@@ -5,9 +5,11 @@
 #ifndef CostMatrix_hpp
 #define CostMatrix_hpp
 
-#include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
+
 #include "PeopleMatrix.hpp"
 
 using namespace std;
@@ -28,8 +30,7 @@ public:
     } typedef CostCoordinates;
 
     CostMatrix(int cellsNumber, int periodsNumber, int peopleTypes);
-
-    int loadMatrix(istream inputFile);
+    int load(ifstream *inputFileStream);
 
 //    void getMinimumCost(int j, int *i, int *m, int *t, int ***people, int tSize, int mSize, int iSize);
 
@@ -54,9 +55,6 @@ public:
     void print();
 
 private:
-    /*
-     * todo comments
-     */
     int ****costs;                  // Indexes are j, i, m, t, in this order
     int cellsNumber;                // Number of cells
     int timePeriods;                // Number of time periods

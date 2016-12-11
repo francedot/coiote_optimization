@@ -22,6 +22,33 @@ PeopleMatrix::PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber) {
     }
 }
 
+int PeopleMatrix::load(ifstream *inputFileStream) {
+    string line;    // contains a line of the Input file
+    string word;    // contains a single word (into a line)
+    int m;          // index for peopleTypes
+    int t;          // index for timePeriods
+    int i;          // index for cellsNumber
+
+    // jump empty line
+    getline(*inputFileStream, line);
+
+    for (m = 0; m < peopleTypes; m++) {
+        for (t = 0; t < timePeriods; t++) {
+            // jump line with m and t indexes
+            getline(*inputFileStream, line);
+
+            getline(*inputFileStream, line);
+            istringstream inputStringStream(line);
+            for (i = 0; i < cellsNumber; i++) {
+                inputStringStream >> word;
+                peopleMatrix[t][m][i] = atoi(word.c_str());
+            }
+        }
+    }
+
+    return 1;
+}
+
 /*
  * It returns the internal representation of the people matrix. Should be used with caution.
  */

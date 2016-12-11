@@ -48,11 +48,29 @@ CostMatrix::CostMatrix(int cellsNumber, int peopleTypes, int timePeriods) {
     }
 }
 
-/*
- * todo comments
- */
-int CostMatrix::loadMatrix(istream inputFile) {
-    return 0;
+int CostMatrix::load(ifstream *inputFileStream) {
+    string line;    // contains a line of the Input file
+    string word;    // contains a single word (into a line)
+    int m;          // index for peopleTypes
+    int t;          // index for timePeriods
+
+    for (m = 0; m < peopleTypes; m++) {
+        for (t = 0; t < timePeriods; t++) {
+            // jump line with m and t indexes
+            getline(*inputFileStream, line);
+
+            for (int i = 0; i < cellsNumber; i++) {
+                getline(*inputFileStream, line);
+                istringstream inputStringStream(line);
+                for (int j = 0; j < cellsNumber; j++) {
+                    inputStringStream >> word;
+                    costs[j][i][m][t] = atoi(word.c_str());
+                }
+            }
+        }
+    }
+
+    return 1;
 }
 
 
@@ -209,7 +227,7 @@ int CostMatrix::getCost(int j, int i, int m, int t) {
  * This method returns the average cost per task for the given destination cell "j".
  */
 int CostMatrix::getAvgCostsPerTask(int j) {
-    return averageCostsPerTask[j];
+    return (int) averageCostsPerTask[j];
 }
 
 /*

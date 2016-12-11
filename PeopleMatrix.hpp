@@ -6,12 +6,15 @@
 #define COIOTE_PROJECT_PEOPLEMATRIX_HPP
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
 class PeopleMatrix {
 public:
     PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber);
+    int load(ifstream *inputFileStream);
 
     int ***getPeopleMatrix();
 
