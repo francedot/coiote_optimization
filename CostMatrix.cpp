@@ -42,6 +42,8 @@ int CostMatrix::load(ifstream *inputFileStream) {
     int m;          // index for peopleTypes
     int t;          // index for timePeriods
 
+    int cost;    // for using updateAvgCostsPerTask
+
     for (m = 0; m < peopleTypes; m++) {
         for (t = 0; t < timePeriods; t++) {
             // jump line with m and t indexes
@@ -52,7 +54,8 @@ int CostMatrix::load(ifstream *inputFileStream) {
                 istringstream inputStringStream(line);
                 for (int j = 0; j < cellsNumber; j++) {
                     inputStringStream >> word;
-                    costs[j][i][m][t] = atoi(word.c_str());
+                    cost = costs[j][i][m][t] = atoi(word.c_str());
+                    this->updateAvgCostsPerTask(j, (cost / (m + 1)), j);
                 }
             }
         }
