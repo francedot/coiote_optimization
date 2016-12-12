@@ -37,6 +37,9 @@ public:
 
     vector<CostMatrix::CostCoordinates> *getMinimumTaskCostDiversified(int j, int remainingTasksForJ, PeopleMatrix *people);
 
+    CostCoordinates *
+    getMinimumCost(int j, PeopleMatrix *people, int *remainingtasks, int cellsNumber, int peopleTypes, int timePeriods);
+
     void setValue(int j, int i, int m, int t, int value);
 
     int getCost(int j, int i, int m, int t);

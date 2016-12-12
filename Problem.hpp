@@ -49,12 +49,15 @@ private:
     // t (0 - timePeriods)
     PeopleMatrix *people;
 
+    SimulatedAnnealing *simAnnealings;
+
     Solution *currentBestSolution;
 
     void printInputFileRead();
     void load();
     //return 1 if elite has been updated, 0 otherwise
-    bool updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> elite, int eliteDim);
+    bool
+    updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> *elite, int eliteDim);
 };
 
 #endif /* ProblemData_hpp */

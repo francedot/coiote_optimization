@@ -13,6 +13,7 @@ using namespace std;
 
 class PeopleMatrix {
 public:
+    PeopleMatrix(const PeopleMatrix &toCopy);
     PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber);
     int load(ifstream *inputFileStream);
 
@@ -20,7 +21,15 @@ public:
 
     void setValue(int t, int m, int i, int value);
 
+    void decrementPeople(int t, int m, int i, int decrement);
+
     int getPeople(int t, int m, int i);
+
+    int getCellsNumber();
+
+    int getPeopleTypes();
+
+    int getTimePeriods();
 
     void printPeople();
 

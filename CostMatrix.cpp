@@ -221,6 +221,73 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
     }
 }
 
+CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
+                                                        int cellsNumber, int peopleTypes, int timePeriods) {
+    CostMatrix::CostCoordinates *c = new CostCoordinates();
+    bool restartFlagT = true, restartFlagM = true, restartFlagI = true;
+    int stopT = timePeriods, stopM = peopleTypes, stopI = cellsNumber;
+    int startT = rand() % timePeriods;
+    int startM = rand() % peopleTypes;
+    int startI = rand() % cellsNumber;
+    bool flag = true;
+    int tmpPeople = 0;
+    int tmpTasks = 0;
+    restartFlagT = true;
+    for (int t = startT; t < stopT && (flag); t++) {
+        restartFlagM = true;
+        for (int m = startM; m < stopM && (flag); m++) {
+            restartFlagI = true;
+            for (int i = startI; i < stopI && (flag); i++) {
+                tmpPeople = solutionPeople->getPeople(t, m, i);
+                tmpTasks = remainingtasks[j];
+                if (!((i == j) || (remainingtasks[j] == 0) || solutionPeople->getPeople(t, m, i) == 0)) {
+                    if ((costs[j][i][m][t] / (m + 1)) <= averageCostsPerTask[j]) {
+                        c->j = j;
+                        c->i = i;
+                        c->m = m;
+                        c->t = t;
+                        flag = false;
+                    }
+                }
+                if (i == stopI - 1 && restartFlagI) {
+                    i = 0;
+                    stopI = startI;
+                    restartFlagI = false;
+                }
+            }
+            if (m == stopM - 1 && restartFlagM) {
+                m = 0;
+                stopM = startM;
+                restartFlagM = false;
+            }
+        }
+        if (t == stopT - 1 && restartFlagT) {
+            t = 0;
+            stopT = startT;
+            restartFlagT = false;
+        }
+    }
+    if (flag) {
+        //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
+        //vengono restituite le prime cordinate valide disponibili
+        for (int t = 0; t < timePeriods && (flag); t++) {
+            for (int m = 0; m < peopleTypes && (flag); m++) {
+                for (int i = 0; i < cellsNumber && (flag); i++) {
+                    if (!((i == j) || (remainingtasks[j] == 0) || solutionPeople->getPeople(t, m, i) == 0)) {
+                        c->j = j;
+                        c->i = i;
+                        c->m = m;
+                        c->t = t;
+                        flag = false;
+                    }
+                }
+            }
+        }
+    }
+    //a returned nullptr should be interpreted as a failure of the algorythm. if there are enought people to complete all tasks this should never happen
+    return c;
+}
+
 /*
  * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
  */

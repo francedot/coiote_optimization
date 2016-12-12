@@ -7,7 +7,7 @@
 using namespace std;
 
 int _populationDimension = 20;
-int _eliteDimension = 5;
+int _eliteDimension = 10;
 
 /*
  * CONFIGURATIONS
@@ -42,8 +42,13 @@ int main(int argc, const char *argv[]) {
      */
     Problem *problem = new Problem(argv[1], argv[2]);
     problem->solve(_populationDimension, _eliteDimension);
-    cout << "Problem probably solved\n";
-    problem->getBestSolution()->print(1, NULL);
+    cout << "Progam ended. \nProblem probably solved\n" << endl;
+
+    cout << "Final best cost found: " << problem->getBestSolution()->evaluate() << endl;
+
+    for (int i = 0; i < problem->getBestSolution()->getSize(); i++) {
+        problem->getBestSolution()->getCell(i)->print(1);
+    }
 
     return 0;
 }

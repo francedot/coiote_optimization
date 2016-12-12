@@ -9,8 +9,8 @@ using namespace std;
 /*
  * todo da eliminare ?
  */
-Solution::Solution() {
-
+Solution::Solution(PeopleMatrix *peopleMatrix) {
+    solutionPeople = new PeopleMatrix(*peopleMatrix);
 }
 
 Solution::Solution(const Solution &toCopy) {
@@ -28,7 +28,8 @@ Solution::Solution(const Solution &toCopy) {
  * null implica n = 0
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
-void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
+void Solution::populateSolution(Solution *initialSolution, int keptSolCellsRatio, int *tasks, int sizeOfTasks,
+                                CostMatrix *costs, int N) {
     // People is a matrix Time x TypePerson x CellNumber
     // TODO: Add exception / full control of passed parameters
     int *remainingTask = new int[sizeOfTasks];
@@ -36,25 +37,26 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
     this->totalCost = 0;
     for (int i = 0; i < sizeOfTasks; i++)
         remainingTask[i] = tasks[i];
-    //se c'è una soluzione di partenza parte di essa viene riutilizzata
 
+    //solutionPeople->printPeople();
+    //printTasks(remainingTask, N);
+    //se c'è una soluzione di partenza parte di essa viene riutilizzata
     if (initialSolution != nullptr) {
-        double keptCellProbability = ((double) keptSolCells / (double) initialSolution->cells.size());
+
+        //soluzione banale e provvioria che prende le prime celle della soluzione iniziale
+
+        for (int kept = 0; kept < (initialSolution->getSize() / keptSolCellsRatio); kept++) {
+            SolutionCell *toAdd = new SolutionCell(initialSolution->cells[kept]);
+            totalCost += (costs->getCost(toAdd->getJ(), toAdd->getI(), toAdd->getType(), toAdd->getTime()) *
+                          toAdd->getX());
+            remainingTask[toAdd->getJ()] -= ((toAdd->getType() + 1) * toAdd->getX());
+            if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
+            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
+            addSolutionCell(toAdd);
+        }
 
         /*
-         * Codice commentato poichè abbiamo pensato di ottimizzare
-         * facendo scorrere un'unica volta la lista e controllando
-         * volta per volta la probabilità che esca.
-         * Inoltre, abbiamo modificato il tutto in modo da non
-         * distruggere la initialSolution.
-         * */
-        /*int r = (int) ((rand() / RAND_MAX) * initialSolution->cells.size());
-        //choose which cells of previous solution has to be picked
-        SolutionCell toAdd = initialSolution->cells[r]; //TODO remove cell[r]
-        remainingTask[toAdd.getJ()] -= toAdd.getX();
-        people[toAdd.getTime()][toAdd.getType()][toAdd.getI()] -= toAdd.getX();
-        totalCost += costs->getCost(toAdd.getI(), toAdd.getJ(), toAdd.getTime(), toAdd.getType());
-        addSolutionCell(toAdd);*/
+        double keptCellProbability = ((double) keptSolCells / (double) initialSolution->cells.size());
         int kept = 0;
         while (kept < keptSolCells) {
             for (vector<SolutionCell>::iterator it = initialSolution->cells.begin();
@@ -78,8 +80,39 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
                 }
             }
         }
+         */
 
     }
+
+    //solutionPeople->printPeople();
+    //printTasks(remainingTask, N);
+    int x;
+    for (int j = 0; j < N; j++) {
+        while (remainingTask[j] > 0) {
+            CostMatrix::CostCoordinates *c = costs->getMinimumCost(j, solutionPeople, remainingTask, N,
+                                                                   solutionPeople->getPeopleTypes(),
+                                                                   solutionPeople->getTimePeriods());
+            x = 0;
+
+            //solutionPeople->printPeople();
+            //printTasks(remainingTask, N);
+
+            while (remainingTask[j] > 0 && solutionPeople->getPeople(c->t, c->m, c->i) > 0) {
+                remainingTask[j] -= (c->m + 1);
+                solutionPeople->decrementPeople(c->t, c->m, c->i, 1);
+                x++;
+            }
+            if (remainingTask[j] < 0) remainingTask[j] = 0;
+            if (x > 0) {
+                totalCost += (costs->getCost(c->j, c->i, c->m, c->t) * x);
+                addSolutionCell(new SolutionCell(c->i, c->j, c->m, c->t, x));
+            }
+            //printTasks(remainingTask, N);
+        }
+    }
+
+
+    /*
     //   printTasks(remainingTask, N);
     vector<CostMatrix::CostCoordinates> *minsVector;
     vector<CostMatrix::CostCoordinates>::iterator it;
@@ -107,13 +140,15 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCells, int
         free(minsVector);
         //printTasks(remainingTask, N);
     }
+     */
+    //cout << "solution generated, cost: " << totalCost << endl;
 }
 
 /*
  * todo comments
  */
 void Solution::generateInitialSolution(int *remainingTask, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
-    populateSolution(nullptr, 0, remainingTask, sizeOfTasks, people, costs, N);
+    populateSolution(nullptr, 0, remainingTask, sizeOfTasks, costs, N);
 }
 
 
@@ -142,14 +177,24 @@ vector<Solution *> *Solution::generateNeighborhood(int size, int keptSolCells, i
     return neighborhood; //Use delete[] to delete this array;
 }
 
-Solution *Solution::generateNeighbor(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
-    Solution *newSol = new Solution();
-    newSol->populateSolution(this, keptSolCells, tasks, sizeOfTasks, people, costs, N);
+Solution *
+Solution::generateNeighbor(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+                           int N) {
+    Solution *newSol = new Solution(people);
+    newSol->populateSolution(this, keptSolCellsRatio, tasks, sizeOfTasks, costs, N);
     return newSol;
 }
 
 int Solution::evaluate() {
     return totalCost;
+}
+
+PeopleMatrix *Solution::getSolutionPeople() {
+    return solutionPeople;
+}
+
+void Solution::setSolutionPeople(PeopleMatrix peopleToSet) {
+    solutionPeople = new PeopleMatrix(peopleToSet);
 }
 
 void Solution::print(bool screen, string path) {
@@ -167,4 +212,13 @@ void Solution::printTasks(int *remainingTask, int N) {
         }
     }
     std::cout << std::endl;
+}
+
+int Solution::getSize() {
+    return cells.size();
+}
+
+SolutionCell *Solution::getCell(int i) {
+    if (i >= cells.size()) return nullptr;
+    return &cells[i];
 }

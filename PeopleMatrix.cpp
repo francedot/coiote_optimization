@@ -7,6 +7,23 @@
 /*
  * constructor: allocate memory and initialize values for peopleMatrix
  */
+
+PeopleMatrix::PeopleMatrix(const PeopleMatrix &toCopy) {
+    timePeriods = toCopy.timePeriods;
+    peopleTypes = toCopy.peopleTypes;
+    cellsNumber = toCopy.cellsNumber;
+    peopleMatrix = new int **[timePeriods]();
+    for (int t = 0; t < timePeriods; t++) {
+        peopleMatrix[t] = new int *[peopleTypes]();
+        for (int m = 0; m < peopleTypes; m++) {
+            peopleMatrix[t][m] = new int[cellsNumber]();
+            for (int i = 0; i < cellsNumber; i++) {
+                peopleMatrix[t][m][i] = toCopy.peopleMatrix[t][m][i];
+            }
+        }
+    }
+}
+
 PeopleMatrix::PeopleMatrix(int timePeriods, int peopleTypes, int cellsNumber) {
 
     this->cellsNumber = cellsNumber;
@@ -52,6 +69,7 @@ int PeopleMatrix::load(ifstream *inputFileStream) {
         }
     }
 
+
     return 1;
 }
 
@@ -60,6 +78,23 @@ int PeopleMatrix::load(ifstream *inputFileStream) {
  */
 int ***PeopleMatrix::getPeopleMatrix() {
     return peopleMatrix;
+}
+
+int PeopleMatrix::getCellsNumber() {
+    return cellsNumber;
+}
+
+int PeopleMatrix::getPeopleTypes() {
+    return peopleTypes;
+}
+
+int PeopleMatrix::getTimePeriods() {
+    return timePeriods;
+}
+
+void PeopleMatrix::decrementPeople(int t, int m, int i, int decrement) {
+    peopleMatrix[t][m][i] -= decrement;
+    if (peopleMatrix[t][m][i] < 0) peopleMatrix[t][m][i] = 0;
 }
 
 /*
@@ -79,12 +114,14 @@ int PeopleMatrix::getPeople(int t, int m, int i) {
 /*
  * screen print of the people matrix
  */
+
 void PeopleMatrix::printPeople() {
-    for (int t = 0; t < timePeriods; t++) {
-        for (int m = 0; m < peopleTypes; m++) {
+    for (int m = 0; m < peopleTypes; m++) {
+        for (int t = 0; t < timePeriods; t++) {
             cout << m << " " << t << endl;
-            for (int i = 0; i < cellsNumber; i++)
+            for (int i = 0; i < cellsNumber; i++) {
                 cout << peopleMatrix[t][m][i] << " ";
+            }
             cout << endl;
         }
     }

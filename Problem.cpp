@@ -101,9 +101,8 @@ void Problem::load() {
     getline(inputFileStream, line);
     istringstream inputStringStream3(line);
     totalTasks = new int[cellsNumber];
-
     for (i = 0; i < cellsNumber; i++) {
-        inputStringStream2 >> word;
+        inputStringStream3 >> word;
         totalTasks[i] = atoi(word.c_str());
     }
 
@@ -201,13 +200,13 @@ void Problem::dummyLoad() {
 int Problem::solve(int populationDimension, int eliteDimension) {
     cout << "solve() called, attempting to solve the problem\n";
 
-    Solution *initialSolution = new Solution();
+    Solution *initialSolution = new Solution(people);
     vector<int> eliteIndexes;                       //The elite is an vector of the indexes of the best solution
     bool flag;                                      //Flag used to distinguish solutions in the elite
-    int invariantCellsOfNeighborhood = 5;           //This is the number of cells invariant in the generation of neighborhood
+    int invariantCellsOfNeighborhoodRatio = 4;      //The invariant cells number is given by (sizeOfPreviousSolution)/(invariantCellsOfNeighborhoodRatio)
     int stepsPerWave = 2;                           //A step means a decrement of temperature
     int stableWaves = 0;                            //Parameter necessary to stop the algorithm
-    int maxStableWaves = 10;                        //Parameter necessary to stop the algorithm
+    int maxStableWaves = 20;                        //Parameter necessary to stop the algorithm
 
     initialSolution->generateInitialSolution(totalTasks, cellsNumber, people, costs, cellsNumber);
     currentBestSolution = initialSolution;          //at the beginning the best solution is the initial solution
@@ -215,39 +214,45 @@ int Problem::solve(int populationDimension, int eliteDimension) {
      * below a population of instances of standard Simulation Annealing is declared, each one with his current solution stored inside,
      * provided in the first wave of the algorithm by making a copy (with copy-constructor) of the initial solution generated above;
      */
-    SimulatedAnnealing *simAnnealings = new SimulatedAnnealing[populationDimension]();
+    simAnnealings = new SimulatedAnnealing[populationDimension]();
 
     //First wave is performed separatly to be able to assign each instance of Simulated Annealing his own starting solution
     for (int i = 0; i < populationDimension; i++) {
         simAnnealings[i].setInitialSolution(new Solution(*initialSolution));
+        simAnnealings[i].getCurrSolution()->setSolutionPeople(*people);
         simAnnealings[i].resetTemperature();                                                //temperature set to max
-        simAnnealings[i].run(invariantCellsOfNeighborhood, totalTasks, cellsNumber, people, costs, cellsNumber,
+        simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber, people, costs, cellsNumber,
                              stepsPerWave);
     }
-    updateElite(simAnnealings, populationDimension, eliteIndexes, eliteDimension);
+    for (int i = 0; i < populationDimension; i++) {
+        cout << simAnnealings[i].getCurrSolution()->evaluate() << endl;
+    }
+
+    updateElite(simAnnealings, populationDimension, &eliteIndexes, eliteDimension);
     //end of first wave, the elite contains the best solutions up to now
     //successive waves, the cycle is stopped when the best solution has not been updated for "maxStableWaves" consecutive waves
+    int wave = 0;
     while (stableWaves < maxStableWaves) {
+        //cout << "wave: " << wave++ << endl;
         for (int i = 0; i < populationDimension; i++) {
             flag = false;
             for (int j = 0; j < eliteDimension; j++)
                 if (i == eliteIndexes[j]) flag = 1;       //checking if this solution is part of the elite
 
             if (flag) {     //if the Solution belongs to the elite the Simulated Annealing simply resume from the point it left
-                simAnnealings[i].run(invariantCellsOfNeighborhood, totalTasks, cellsNumber,
+                simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber,
                                      people, costs, cellsNumber, stepsPerWave);
             } else {          //if the Solution doesn't belongs to the elite it restart at max temperatur with currentBestSolution as starting Solution
                 simAnnealings[i].setInitialSolution(new Solution(*currentBestSolution));
                 simAnnealings[i].resetTemperature();
-                simAnnealings[i].run(invariantCellsOfNeighborhood, totalTasks, cellsNumber,
+                simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber,
                                      people, costs, cellsNumber, stepsPerWave);
             }
         }//end of wave;
-        if (updateElite(simAnnealings, populationDimension, eliteIndexes, eliteDimension)) {
+        if (updateElite(simAnnealings, populationDimension, &eliteIndexes, eliteDimension)) {
             stableWaves = 0;
         } else stableWaves++;
     }
-    currentBestSolution->print(1);
     return 0;
 }
 
@@ -262,22 +267,24 @@ int Problem::solve(int populationDimension, int eliteDimension) {
  *
  *      This method return true if the best solution of the problem has been updated. False otherwise
  */
-bool Problem::updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> elite, int eliteDim) {
+bool Problem::updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnnealingDimension, vector<int> *elite,
+                          int eliteDim) {
     vector<int>::iterator it;
     bool flag = 0;
     for (int i = 0; i < simAnnealingDimension; i++) {
-        it = elite.begin(); //if elite is empty elite.begin() == elite.end()
-        while ((it <= elite.end()) && (simAnnealingInstances[i].getCurrSolution()->evaluate() <
-                                       simAnnealingInstances[*it].getCurrSolution()->evaluate()))
+        it = elite->begin(); //if elite is empty elite.begin() == elite.end()
+        if (elite->size() == 0) it = elite->end();
+        while ((it != elite->end()) && (simAnnealings[i].getCurrSolution()->evaluate() >
+                                        simAnnealings[*it].getCurrSolution()->evaluate()))
             it++;
         //con && se l'iteratore esce dalla dimensine massima di elite, non viene effettuato il secondo controllo
-        elite.insert(it, i);
-        if (elite.size() > eliteDim)
-            elite.pop_back();           //riporta la dimensione dell'elite a quella corretta
+        elite->insert(it, i);
+        if (elite->size() > eliteDim)
+            elite->pop_back();           //riporta la dimensione dell'elite a quella corretta
     }
     //checking if current best solution has to be updated.
-    if (simAnnealingInstances[elite[0]].getCurrSolution()->evaluate() < currentBestSolution->evaluate()) {
-        currentBestSolution = simAnnealingInstances[elite[0]].getCurrSolution();
+    if (simAnnealings[elite->at(0)].getCurrSolution()->evaluate() < currentBestSolution->evaluate()) {
+        currentBestSolution = simAnnealings[elite->at(0)].getCurrSolution();
         cout << "bestSolution Updated! cost now: " << currentBestSolution->evaluate() << endl;
         flag = true;
     }

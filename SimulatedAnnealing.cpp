@@ -48,10 +48,12 @@ void SimulatedAnnealing::resetTemperature() {
  * At each steps it calls the function "runStep(...)" that runs the heuristic just once.
  * (After it ends, the caller might decrement the temperature)
  */
-void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N, int steps) {
-    std::cout << "run(...) called" << std::endl;
+void
+SimulatedAnnealing::run(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+                        int N, int steps) {
+    //std::cout << "run(...) called" << std::endl;
     for (int step = 0; step < steps; step++) {
-        runStep(keptSolCells, tasks, sizeOfTasks, people, costs, N);
+        runStep(keptSolCellsRatio, tasks, sizeOfTasks, people, costs, N);
         currentTemperature -= 5;
     }
 }
@@ -60,21 +62,24 @@ void SimulatedAnnealing::run(int keptSolCells, int *tasks, int sizeOfTasks, Peop
  * This method runs a single step of the SimulatedAnnealing by generating a neighboor until the selection logic
  * selects and replaces the "currentSolution" of this SimulatedAnnealing instance.
  */
-void SimulatedAnnealing::runStep(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N) {
-    std::cout << "runStep(...) called -> ";
+void
+SimulatedAnnealing::runStep(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+                            int N) {
+    //std::cout << "runStep(...) called" << endl;
     Solution *newSol;
     for (int instance = 0; instance < 20; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
-        newSol = currentSolution->generateNeighbor(keptSolCells, tasks, sizeOfTasks, people, costs, N);
+        newSol = currentSolution->generateNeighbor(keptSolCellsRatio, tasks, sizeOfTasks, people, costs, N);
+
         int difference = newSol->evaluate() - currentSolution->evaluate();
         if (difference <= 0) {
             currentSolution = newSol;
         } else {
             double r = ((double) rand()) / RAND_MAX;
-            if (r >= 0.5 + exp(-((double) difference) / currentTemperature)) {
+            if (r >= exp(-((double) difference) / currentTemperature)) {
                 // TODO: implementare distribuzione esponenziale
                 currentSolution = newSol;
             }
         }
     }
-    cout << currentSolution->evaluate() << endl;
+    //cout << "new current: " << currentSolution->evaluate() << endl;
 }

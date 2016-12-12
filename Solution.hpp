@@ -21,7 +21,7 @@ public:
     /*
      * todo comments
      */
-    Solution();
+    Solution(PeopleMatrix *peopleMatrix);
 
     Solution(const Solution &toCopy);
 
@@ -33,7 +33,13 @@ public:
 
     Solution *generateNeighbor(int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
-    SolutionCell getCell(int n);
+    int getSize();
+
+    PeopleMatrix *getSolutionPeople();
+
+    void setSolutionPeople(PeopleMatrix peopleToSet);
+
+    SolutionCell *getCell(int i);
 
     int evaluate();
 
@@ -44,8 +50,9 @@ private:
      * todo comments
      */
     vector<SolutionCell> cells;
+    PeopleMatrix *solutionPeople;
 
-    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
+    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, CostMatrix *costs, int N);
 
     int totalCost;
 
