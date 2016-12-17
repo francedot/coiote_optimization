@@ -22,14 +22,22 @@ public:
 
     void resetTemperature();
 
-    void runStep(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
+    void runStep(double keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
-    void run(int keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N, int steps);
+    void
+    run(double keptSolCells, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N, int steps);
+
+    void decreaseKeptCellsPercentage();
+
+    int getInvariantCellsOfNeighborhoodPercentage();
+
+    void resetInvariantCellsOfNeighborhoodPercentage();
 
 private:
     int currentTemperature;
     int maxTemperature = 100;
     Solution *currentSolution;
+    double invariantCellsOfNeighborhoodPercentage;
 };
 
 

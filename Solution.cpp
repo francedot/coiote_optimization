@@ -22,13 +22,42 @@ Solution::Solution(const Solution &toCopy) {
 }
 
 /*
+ * This function is used when generating the neighboor. It returns the best k solutionCells
+ * of the Solution, which enables us to keep the best k solutionCells instead of the first
+ * k solutionCells.
+ *
+ * TODO: it can be improved in timing by changing Solution implementation and keeping
+ * TODO:      SolutionCells in Solution sorted by cost and not by <i,j> pair.
+*/
+vector<SolutionCell> *getBestKSolutions(Solution *currentSolution, double percentage, CostMatrix *costs) {
+    double cur_max = 100000;
+    int k = (int) ((percentage * (double) currentSolution->getSize()) / 100);
+    vector<SolutionCell> *bestSolutions = new vector<SolutionCell>[k];
+    for (int i = 0; i < currentSolution->getSize(); i++) {
+        if (currentSolution->getCell(i)->getCostOfSolutionCell(costs) < cur_max) {
+            vector<SolutionCell>::iterator it = bestSolutions->begin();
+            while ((it != bestSolutions->end()) && (currentSolution->getCell(i)->getCostOfSolutionCell(costs) >
+                                                    it->getCostOfSolutionCell(costs)))
+                it++;
+            bestSolutions->insert(it, *currentSolution->getCell(i));
+            if (bestSolutions->size() > k)
+                bestSolutions->pop_back();
+            it = bestSolutions->end();
+            it--;
+            cur_max = it->getCostOfSolutionCell(costs);
+        }
+    }
+    return bestSolutions;
+}
+
+/*
  * initialSolution = eventuale soluzione iniziale di cui generare il vicinato. (null = genera nuova soluzione)
  * n = numero di celle da lasciare invariate nella generazione del vicinato
  * N = numero di celle in totale [parametro del problema]
  * null implica n = 0
  * populateSolution popola se stessa partendo da una initial solution di cui ne tiene n
  */
-void Solution::populateSolution(Solution *initialSolution, int keptSolCellsRatio, int *tasks, int sizeOfTasks,
+void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPercentage, int *tasks, int sizeOfTasks,
                                 CostMatrix *costs, int N) {
     // People is a matrix Time x TypePerson x CellNumber
     // TODO: Add exception / full control of passed parameters
@@ -42,10 +71,8 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCellsRatio
     //printTasks(remainingTask, N);
     //se c'è una soluzione di partenza parte di essa viene riutilizzata
     if (initialSolution != nullptr) {
-
         //soluzione banale e provvioria che prende le prime celle della soluzione iniziale
-
-        for (int kept = 0; kept < (initialSolution->getSize() / keptSolCellsRatio); kept++) {
+        /*for (int kept = 0; kept < (initialSolution->getSize() / keptSolCellsRatio); kept++) {
             SolutionCell *toAdd = new SolutionCell(initialSolution->cells[kept]);
             totalCost += (costs->getCost(toAdd->getJ(), toAdd->getI(), toAdd->getType(), toAdd->getTime()) *
                           toAdd->getX());
@@ -53,8 +80,18 @@ void Solution::populateSolution(Solution *initialSolution, int keptSolCellsRatio
             if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
             solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
             addSolutionCell(toAdd);
+        }*/
+        vector<SolutionCell> *bestSolutions = getBestKSolutions(initialSolution, keptSolCellsPercentage, costs);
+        vector<SolutionCell>::iterator it;
+        for (it = bestSolutions->begin(); it != bestSolutions->end(); it++) {
+            SolutionCell *toAdd = new SolutionCell(*it);
+            totalCost += (costs->getCost(toAdd->getJ(), toAdd->getI(), toAdd->getType(), toAdd->getTime()) *
+                          toAdd->getX());
+            remainingTask[toAdd->getJ()] -= ((toAdd->getType() + 1) * toAdd->getX());
+            if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
+            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
+            addSolutionCell(toAdd);
         }
-
         /*
         double keptCellProbability = ((double) keptSolCells / (double) initialSolution->cells.size());
         int kept = 0;
@@ -178,10 +215,11 @@ vector<Solution *> *Solution::generateNeighborhood(int size, int keptSolCells, i
 }
 
 Solution *
-Solution::generateNeighbor(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+Solution::generateNeighbor(double keptSolCellsPercentage, int *tasks, int sizeOfTasks, PeopleMatrix *people,
+                           CostMatrix *costs,
                            int N) {
     Solution *newSol = new Solution(people);
-    newSol->populateSolution(this, keptSolCellsRatio, tasks, sizeOfTasks, costs, N);
+    newSol->populateSolution(this, keptSolCellsPercentage, tasks, sizeOfTasks, costs, N);
     return newSol;
 }
 

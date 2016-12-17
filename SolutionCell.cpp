@@ -88,4 +88,9 @@ void SolutionCell::print(bool screen, string path) {
     //todo print on output file
 }
 
+double SolutionCell::getCostOfSolutionCell(CostMatrix *costs) {
+    //return (costs->getCost(getJ(), getI(), getType(), getTime()) * getX());
+    return (costs->getCost(getJ(), getI(), getType(), getTime()) / (getType() + 1));
+}
+
 

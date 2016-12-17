@@ -10,18 +10,34 @@ using namespace std;
 SimulatedAnnealing::SimulatedAnnealing() {
     maxTemperature = 100;
     currentTemperature = maxTemperature;
+    invariantCellsOfNeighborhoodPercentage = 20;
 }
 
 SimulatedAnnealing::SimulatedAnnealing(Solution *initialSolution) {
     currentSolution = initialSolution;
     maxTemperature = 100;
     currentTemperature = maxTemperature;
+    invariantCellsOfNeighborhoodPercentage = 20;
 }
 
 SimulatedAnnealing::SimulatedAnnealing(Solution *initialSolution, int maxTemperature) {
     currentSolution = initialSolution;
     this->maxTemperature = maxTemperature;
     currentTemperature = maxTemperature;
+    invariantCellsOfNeighborhoodPercentage = 20;
+}
+
+void SimulatedAnnealing::decreaseKeptCellsPercentage() {
+    if (invariantCellsOfNeighborhoodPercentage < 80)
+        invariantCellsOfNeighborhoodPercentage += 15;
+}
+
+int SimulatedAnnealing::getInvariantCellsOfNeighborhoodPercentage() {
+    return invariantCellsOfNeighborhoodPercentage;
+}
+
+void SimulatedAnnealing::resetInvariantCellsOfNeighborhoodPercentage() {
+    invariantCellsOfNeighborhoodPercentage = 20;
 }
 
 Solution *SimulatedAnnealing::getCurrSolution() {
@@ -49,12 +65,13 @@ void SimulatedAnnealing::resetTemperature() {
  * (After it ends, the caller might decrement the temperature)
  */
 void
-SimulatedAnnealing::run(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+SimulatedAnnealing::run(double keptSolCellsPercentage, int *tasks, int sizeOfTasks, PeopleMatrix *people,
+                        CostMatrix *costs,
                         int N, int steps) {
     //std::cout << "run(...) called" << std::endl;
     for (int step = 0; step < steps; step++) {
-        runStep(keptSolCellsRatio, tasks, sizeOfTasks, people, costs, N);
-        currentTemperature -= 5;
+        runStep(keptSolCellsPercentage, tasks, sizeOfTasks, people, costs, N);
+        currentTemperature *= 0.9;
     }
 }
 
@@ -63,12 +80,13 @@ SimulatedAnnealing::run(int keptSolCellsRatio, int *tasks, int sizeOfTasks, Peop
  * selects and replaces the "currentSolution" of this SimulatedAnnealing instance.
  */
 void
-SimulatedAnnealing::runStep(int keptSolCellsRatio, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs,
+SimulatedAnnealing::runStep(double keptSolCellsPercentage, int *tasks, int sizeOfTasks, PeopleMatrix *people,
+                            CostMatrix *costs,
                             int N) {
     //std::cout << "runStep(...) called" << endl;
     Solution *newSol;
-    for (int instance = 0; instance < 20; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
-        newSol = currentSolution->generateNeighbor(keptSolCellsRatio, tasks, sizeOfTasks, people, costs, N);
+    for (int instance = 0; instance < 10; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
+        newSol = currentSolution->generateNeighbor(keptSolCellsPercentage, tasks, sizeOfTasks, people, costs, N);
 
         int difference = newSol->evaluate() - currentSolution->evaluate();
         if (difference <= 0) {

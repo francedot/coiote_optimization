@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
+#include "CostMatrix.hpp"
 
 class SolutionCell {
 
@@ -32,6 +33,8 @@ public:
     int setTime(int t);
 
     void print(bool screen = 0, std::string path = "");
+
+    double getCostOfSolutionCell(CostMatrix *costs);
 
 private:
     /*

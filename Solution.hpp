@@ -31,7 +31,8 @@ public:
 
     void addSolutionCell(SolutionCell *toAdd);
 
-    Solution *generateNeighbor(int kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
+    Solution *
+    generateNeighbor(double kept, int *tasks, int sizeOfTasks, PeopleMatrix *people, CostMatrix *costs, int N);
 
     int getSize();
 
@@ -52,7 +53,7 @@ private:
     vector<SolutionCell> cells;
     PeopleMatrix *solutionPeople;
 
-    void populateSolution(Solution *initialSolution, int n, int *task, int sizeOfTasks, CostMatrix *costs, int N);
+    void populateSolution(Solution *initialSolution, double n, int *task, int sizeOfTasks, CostMatrix *costs, int N);
 
     int totalCost;
 

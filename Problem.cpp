@@ -203,8 +203,8 @@ int Problem::solve(int populationDimension, int eliteDimension) {
     Solution *initialSolution = new Solution(people);
     vector<int> eliteIndexes;                       //The elite is an vector of the indexes of the best solution
     bool flag;                                      //Flag used to distinguish solutions in the elite
-    int invariantCellsOfNeighborhoodRatio = 4;      //The invariant cells number is given by (sizeOfPreviousSolution)/(invariantCellsOfNeighborhoodRatio)
-    int stepsPerWave = 2;                           //A step means a decrement of temperature
+    //int invariantCellsOfNeighborhoodRatio = 6;      //The invariant cells number is given by (sizeOfPreviousSolution)/(invariantCellsOfNeighborhoodRatio)
+    int stepsPerWave = 6;                           //A step means a decrement of temperature
     int stableWaves = 0;                            //Parameter necessary to stop the algorithm
     int maxStableWaves = 20;                        //Parameter necessary to stop the algorithm
 
@@ -216,12 +216,13 @@ int Problem::solve(int populationDimension, int eliteDimension) {
      */
     simAnnealings = new SimulatedAnnealing[populationDimension]();
 
-    //First wave is performed separatly to be able to assign each instance of Simulated Annealing his own starting solution
+    //First wave is performed separatly to be able to assign each instance of Simulated Annealing its own starting solution
     for (int i = 0; i < populationDimension; i++) {
         simAnnealings[i].setInitialSolution(new Solution(*initialSolution));
         simAnnealings[i].getCurrSolution()->setSolutionPeople(*people);
         simAnnealings[i].resetTemperature();                                                //temperature set to max
-        simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber, people, costs, cellsNumber,
+        simAnnealings[i].run(simAnnealings[i].getInvariantCellsOfNeighborhoodPercentage(), totalTasks, cellsNumber,
+                             people, costs, cellsNumber,
                              stepsPerWave);
     }
     for (int i = 0; i < populationDimension; i++) {
@@ -240,12 +241,16 @@ int Problem::solve(int populationDimension, int eliteDimension) {
                 if (i == eliteIndexes[j]) flag = 1;       //checking if this solution is part of the elite
 
             if (flag) {     //if the Solution belongs to the elite the Simulated Annealing simply resume from the point it left
-                simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber,
+                simAnnealings[i].decreaseKeptCellsPercentage();
+                simAnnealings[i].run(simAnnealings[i].getInvariantCellsOfNeighborhoodPercentage(), totalTasks,
+                                     cellsNumber,
                                      people, costs, cellsNumber, stepsPerWave);
             } else {          //if the Solution doesn't belongs to the elite it restart at max temperatur with currentBestSolution as starting Solution
                 simAnnealings[i].setInitialSolution(new Solution(*currentBestSolution));
                 simAnnealings[i].resetTemperature();
-                simAnnealings[i].run(invariantCellsOfNeighborhoodRatio, totalTasks, cellsNumber,
+                simAnnealings[i].resetInvariantCellsOfNeighborhoodPercentage();
+                simAnnealings[i].run(simAnnealings[i].getInvariantCellsOfNeighborhoodPercentage(), totalTasks,
+                                     cellsNumber,
                                      people, costs, cellsNumber, stepsPerWave);
             }
         }//end of wave;
