@@ -65,6 +65,19 @@ int CostMatrix::load(ifstream *inputFileStream) {
         *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index); // Aggiorna std_dev
         cout << "Media per task: " << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k) << endl;
     }
+    /*for (int m = 0; m < peopleTypes; m++) {
+        cout << "Type: " << m + 1 << "\n" << endl;
+        for (int t = 0; t < timePeriods; t++) {
+            cout << "At time: " << t << "\n" << endl;
+            for (int j = 0; j < cellsNumber; j++) {
+                for (int i = 0; i < cellsNumber; i++) {
+                    cout << costs[j][i][m][t] << ", ";
+                }
+                cout << "\n" << endl;
+            }
+        }
+    }*/
+
     return 1;
 }
 
@@ -370,7 +383,7 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
             if (endArray) {
                 for (int l = 0; l < peopleTypes; l++) {
                     double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
-                    //if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
+                    // if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
                     if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
                           solutionPeople->getPeople(startTime, l, curI) == 0)) {
                         //if(total_entries < 100) cout << "Entered" << endl;
