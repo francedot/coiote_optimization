@@ -8,7 +8,7 @@
 using namespace std;
 
 int _populationDimension = 20;
-int _eliteDimension = 10;
+int _eliteDimension = 4;
 
 /*
  * CONFIGURATIONS
@@ -47,5 +47,6 @@ int main(int argc, const char *argv[]) {
     for (int i = 0; i < problem->getBestSolution()->getSize(); i++) {
         problem->getBestSolution()->getCell(i)->print(1);
     }
+    problem->getBestSolution()->printForTypes();
     return 0;
 }

@@ -46,6 +46,8 @@ public:
 
     void print(bool screen = 0, string path = nullptr);
 
+    void printForTypes();
+
 private:
     /*
      * todo comments

@@ -201,7 +201,7 @@ int Problem::solve(int populationDimension, int eliteDimension) {
     cout << "solve() called, attempting to solve the problem\n";
 
     Solution *initialSolution = new Solution(people);
-    vector<int> eliteIndexes;                       //The elite is an vector of the indexes of the best solution
+    vector<int> eliteIndexes;                       //The elite is a vector of the indexes of the best solution
     bool flag;                                      //Flag used to distinguish solutions in the elite
     //int invariantCellsOfNeighborhoodRatio = 6;      //The invariant cells number is given by (sizeOfPreviousSolution)/(invariantCellsOfNeighborhoodRatio)
     int stepsPerWave = 6;                           //A step means a decrement of temperature
@@ -215,7 +215,7 @@ int Problem::solve(int populationDimension, int eliteDimension) {
      * provided in the first wave of the algorithm by making a copy (with copy-constructor) of the initial solution generated above;
      */
     simAnnealings = new SimulatedAnnealing[populationDimension]();
-
+    int worstSolutionIndex = 0;
     //First wave is performed separatly to be able to assign each instance of Simulated Annealing its own starting solution
     for (int i = 0; i < populationDimension; i++) {
         simAnnealings[i].setInitialSolution(new Solution(*initialSolution));
@@ -234,7 +234,10 @@ int Problem::solve(int populationDimension, int eliteDimension) {
     //successive waves, the cycle is stopped when the best solution has not been updated for "maxStableWaves" consecutive waves
     int wave = 0;
     while (stableWaves < maxStableWaves) {
-        //cout << "wave: " << wave++ << endl;
+        cout << "Current elite:" << endl;
+        for (int j = 0; j < eliteDimension; j++)
+            cout << eliteIndexes[j] << " | ";
+        cout << endl;
         for (int i = 0; i < populationDimension; i++) {
             flag = false;
             for (int j = 0; j < eliteDimension; j++)
@@ -283,7 +286,10 @@ bool Problem::updateElite(SimulatedAnnealing *simAnnealingInstances, int simAnne
                                         simAnnealings[*it].getCurrSolution()->evaluate()))
             it++;
         //con && se l'iteratore esce dalla dimensine massima di elite, non viene effettuato il secondo controllo
-        elite->insert(it, i);
+        if ((it == elite->begin()) && (it == elite->end()))
+            elite->insert(it, i);
+        else if (*it != i)
+            elite->insert(it, i);
         if (elite->size() > eliteDim)
             elite->pop_back();           //riporta la dimensione dell'elite a quella corretta
     }

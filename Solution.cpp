@@ -242,6 +242,19 @@ void Solution::print(bool screen, string path) {
     //todo print on output file
 }
 
+void Solution::printForTypes() {
+    int tot1 = 0, tot2 = 0, tot3 = 0;
+    for (int c = 0; c < getSize(); c++) {
+        if (cells[c].getType() == 0)
+            tot1 += cells[c].getX();
+        if (cells[c].getType() == 1)
+            tot2 += cells[c].getX();
+        if (cells[c].getType() == 2)
+            tot3 += cells[c].getX();
+    }
+    cout << "Total for types: 0 -> " << tot1 << " 1 -> " << tot2 << " 2-> " << tot3 << endl;
+}
+
 void Solution::printTasks(int *remainingTask, int N) {
     if (remainingTask != nullptr) {
         std::cout << "Tasks: ";

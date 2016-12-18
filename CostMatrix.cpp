@@ -221,6 +221,10 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
     }
 }
 
+// TODO: invece di dare i primi validi se non si trovano elementi che soddisfino la media, prova ad aumentare k!
+// OSS: profiling mostra che la maggior parte del tempo ( a volte 50%) viene passata in questa funzione, e nei casi in cui ci sono
+//      gli optimality gap più alti il rapporto failed/total (cfr sotto) è altissimo, per cui ha senso cercare di
+//      velocizzare e rendere migliore questa funzione.
 CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
                                                         int cellsNumber, int peopleTypes, int timePeriods) {
     // These two static longs tell us the percentage of failed getMinimumExtractions
@@ -228,7 +232,7 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
     static long total_entries = 0;
     total_entries++;
     static long total_fails = 0;
-
+    double k = 0.14;
     CostMatrix::CostCoordinates *c = new CostCoordinates();
     bool restartFlagT = true, restartFlagM = true, restartFlagI = true;
     int stopT = timePeriods, stopM = peopleTypes, stopI = cellsNumber;
@@ -247,7 +251,7 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
                 tmpPeople = solutionPeople->getPeople(t, m, i);
                 tmpTasks = remainingtasks[j];
                 if (!((i == j) || (remainingtasks[j] == 0) || solutionPeople->getPeople(t, m, i) == 0)) {
-                    if ((costs[j][i][m][t] / (m + 1)) <= 0.14 * averageCostsPerTask[j]) {
+                    if ((costs[j][i][m][t] / (m + 1)) <= k * averageCostsPerTask[j]) {
                         c->j = j;
                         c->i = i;
                         c->m = m;
@@ -277,7 +281,7 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
         //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
         //vengono restituite le prime cordinate valide disponibili
         total_fails++;
-        if (total_entries % 10000 == 0)
+        if (total_entries % 110007 == 0) // non stampare ad ogni giro
             cout << "getMinimumCost: Percentage of misses: " << ((double) total_fails / total_entries) << "|| Misses: "
                  << total_fails << "|| Entries" << total_entries << endl;
         for (int t = 0; t < timePeriods && (flag); t++) {
