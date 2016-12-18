@@ -4,7 +4,7 @@
 
 #include "CostMatrix.hpp"
 #include "util.hpp"
-
+#include <math.h>
 /*
  * This constructor initializes the costs matrix and the two average and stnd dev arrays (for welford)
  */
@@ -43,7 +43,7 @@ int CostMatrix::load(ifstream *inputFileStream) {
     int t;          // index for timePeriods
 
     int cost;    // for using updateAvgCostsPerTask
-
+    long index = 0;
     for (m = 0; m < peopleTypes; m++) {
         for (t = 0; t < timePeriods; t++) {
             // jump line with m and t indexes
@@ -55,12 +55,16 @@ int CostMatrix::load(ifstream *inputFileStream) {
                 for (int j = 0; j < cellsNumber; j++) {
                     inputStringStream >> word;
                     cost = costs[j][i][m][t] = atoi(word.c_str());
-                    this->updateAvgCostsPerTask(j, (cost / (m + 1)), j);
+                    index++;
+                    this->updateAvgCostsPerTask(j, ((double) cost) / (m + 1), index);
                 }
             }
         }
     }
-
+    for (int k = 0; k < 3; k++) {
+        *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index); // Aggiorna std_dev
+        cout << "Media per task: " << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k) << endl;
+    }
     return 1;
 }
 
@@ -222,17 +226,15 @@ vector<CostMatrix::CostCoordinates> *CostMatrix::getMinimumTaskCostDiversified(i
 }
 
 // TODO: invece di dare i primi validi se non si trovano elementi che soddisfino la media, prova ad aumentare k!
-// OSS: profiling mostra che la maggior parte del tempo ( a volte 50%) viene passata in questa funzione, e nei casi in cui ci sono
+// OSS: profiling mostra che la maggior parte del tempo ( a volte 50%)nt viene passata in questa funzione, e nei casi in cui ci sono
 //      gli optimality gap più alti il rapporto failed/total (cfr sotto) è altissimo, per cui ha senso cercare di
 //      velocizzare e rendere migliore questa funzione.
 CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
                                                         int cellsNumber, int peopleTypes, int timePeriods) {
     // These two static longs tell us the percentage of failed getMinimumExtractions
-    // in relation to the constat that we multiply for the average
     static long total_entries = 0;
     total_entries++;
     static long total_fails = 0;
-    double k = 0.14;
     CostMatrix::CostCoordinates *c = new CostCoordinates();
     bool restartFlagT = true, restartFlagM = true, restartFlagI = true;
     int stopT = timePeriods, stopM = peopleTypes, stopI = cellsNumber;
@@ -251,7 +253,7 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
                 tmpPeople = solutionPeople->getPeople(t, m, i);
                 tmpTasks = remainingtasks[j];
                 if (!((i == j) || (remainingtasks[j] == 0) || solutionPeople->getPeople(t, m, i) == 0)) {
-                    if ((costs[j][i][m][t] / (m + 1)) <= k * averageCostsPerTask[j]) {
+                    if ((costs[j][i][m][t] / (m + 1)) <= averageCostsPerTask[j]) {
                         c->j = j;
                         c->i = i;
                         c->m = m;
@@ -281,7 +283,7 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
         //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
         //vengono restituite le prime cordinate valide disponibili
         total_fails++;
-        if (total_entries % 110007 == 0) // non stampare ad ogni giro
+        if (total_entries % 1100 == 0) // non stampare ad ogni giro
             cout << "getMinimumCost: Percentage of misses: " << ((double) total_fails / total_entries) << "|| Misses: "
                  << total_fails << "|| Entries" << total_entries << endl;
         for (int t = 0; t < timePeriods && (flag); t++) {
@@ -298,9 +300,165 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
             }
         }
     }
-    //a returned nullptr should be interpreted as a failure of the algorythm. if there are enought people to complete all tasks this should never happen
+    //a returned nullptr should be interpreted as a failure of the algorythm. if there are enough people to complete all tasks this should never happen
     return c;
 }
+
+int min(int a, int b) {
+    if (a < b)
+        return a;
+    return b;
+}
+
+int max(int a, int b) {
+    if (a > b)
+        return a;
+    return b;
+}
+
+CostMatrix::CostCoordinates *
+CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
+                                          int cellsNumber, int peopleTypes, int timePeriods) {
+    static long total_entries = 0, total_fails = 0;
+    total_entries++;
+    int startTime;
+    bool flag = true;
+    CostCoordinates *c = new CostCoordinates();
+    int maxTimeChangingRetries = max(5, timePeriods / 2);
+    int currentTry = 0;
+    int startingI, endingI;
+    bool directionRight;
+    int maxLengthOfScan = cellsNumber;
+    /*
+     * OSS: Non è detto che aumentando maxLengthOfScan ed altri parametri
+     *      che migliorano la ricerca locale si peggiori il tempo. L'algoritmo
+     *      si ferma quando non riesce a migliorare l'ottimo, per cui esiste un
+     *      tradeoff in questo senso: se miglioro la ricerca locale ci metto molto
+     *      tempo nel fare operazioni, ma 'arrivo prima' al punto di stop.
+    */
+    int scanIndex;
+    double curMinValue = 100000.0;
+    int curI;
+    double minForType[peopleTypes];
+    for (int q = 0; q < peopleTypes; q++)
+        minForType[q] = 10000.0;
+    bool endArray;
+    while (currentTry < maxTimeChangingRetries) {
+        startTime = rand() % timePeriods;
+        if (j < (cellsNumber / 2)) {
+            directionRight = true;
+            startingI = j;
+            endingI = cellsNumber - 1;
+            maxLengthOfScan = min(maxLengthOfScan, cellsNumber - 1 - j);
+        } else {
+            directionRight = false;
+            startingI = j;
+            endingI = 0;
+            maxLengthOfScan = min(j, maxLengthOfScan);
+        }
+        scanIndex = 0;
+        //if(total_entries < 100) cout << directionRight << " " << startingI << " " << endingI << " " << maxLengthOfScan << endl;
+        while (scanIndex <= maxLengthOfScan) {
+            if (directionRight) {
+                curI = startingI + scanIndex;
+                endArray = (curI <= endingI);
+            } else {
+                curI = startingI - scanIndex;
+                endArray = (curI >= endingI);
+            }
+            //cout << endArray << endl;
+            if (endArray) {
+                for (int l = 0; l < peopleTypes; l++) {
+                    double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
+                    //if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
+                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
+                          solutionPeople->getPeople(startTime, l, curI) == 0)) {
+                        //if(total_entries < 100) cout << "Entered" << endl;
+                        if (costPerTask <= minForType[l]) {
+                            minForType[l] = costPerTask;
+                            //if(total_entries < 100)
+                            //cout << "New min for type: " << l+1 << " :" << costPerTask << endl;
+                            if (minForType[l] <= curMinValue) {
+                                // if(total_entries < 100) cout << "New curMinValue: " << costPerTask << endl;
+                                curMinValue = costPerTask;
+                                c->i = curI;
+                                c->j = j;
+                                c->m = l;
+                                c->t = startTime;
+                                flag = false;
+                            }
+                        }
+                    }
+                }
+            }
+            scanIndex++;
+        }
+
+        currentTry++;
+    }
+    //if(total_entries < 100)
+    //cout << "Entry: " << total_entries << " Min: " << curMinValue << " i:" << c->i << " j:" << c->j << "  m: " << c->m <<" t:"<<c->t<< endl;
+    if (flag) {
+        //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
+        //vengono restituite le prime cordinate valide disponibili
+        // Antonio: ci sono pochissime probabilità di entrare in questo ciclo, ma va tenuto per sicurezza
+        total_fails++;
+        if (total_entries % 10000 == 0) // non stampare ad ogni giro
+            cout << "getMinimumCost: Percentage of misses: " << ((double) total_fails / total_entries) << "|| Misses: "
+                 << total_fails << "|| Entries" << total_entries << endl;
+        for (int t = 0; t < timePeriods && (flag); t++) {
+            for (int m = 0; m < peopleTypes && (flag); m++) {
+                for (int i = 0; i < cellsNumber && (flag); i++) {
+                    if (!((i == j) || (remainingtasks[j] == 0) || solutionPeople->getPeople(t, m, i) == 0)) {
+                        c->j = j;
+                        c->i = i;
+                        c->m = m;
+                        c->t = t;
+                        flag = false;
+                    }
+                }
+            }
+        }
+    }
+    return c;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
  * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".
@@ -320,7 +478,7 @@ int CostMatrix::getCost(int j, int i, int m, int t) {
  * This method returns the average cost per task for the given destination cell "j".
  */
 int CostMatrix::getAvgCostsPerTask(int j) {
-    return (int) averageCostsPerTask[j];
+    return averageCostsPerTask[j];
 }
 
 /*
@@ -331,7 +489,7 @@ int CostMatrix::getAvgCostsPerTask(int j) {
  * "newValue" will hold the costPerTask (Example: if for a person of type m = 2 the cost is 30, then the cost per
  * task will be 10 because that person can fullfill 3 tasks for that single bigger cost)
  */
-void CostMatrix::updateAvgCostsPerTask(int j, int newValue, long index) {
+void CostMatrix::updateAvgCostsPerTask(int j, double newValue, long index) {
     welford(newValue, averageCostsPerTask + j, stdvCostsPerTask + j, index);
 }
 

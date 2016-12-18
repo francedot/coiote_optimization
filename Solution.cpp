@@ -126,9 +126,9 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
     int x;
     for (int j = 0; j < N; j++) {
         while (remainingTask[j] > 0) {
-            CostMatrix::CostCoordinates *c = costs->getMinimumCost(j, solutionPeople, remainingTask, N,
-                                                                   solutionPeople->getPeopleTypes(),
-                                                                   solutionPeople->getTimePeriods());
+            CostMatrix::CostCoordinates *c = costs->getMinimumCostByDistanceFromJ(j, solutionPeople, remainingTask, N,
+                                                                                  solutionPeople->getPeopleTypes(),
+                                                                                  solutionPeople->getTimePeriods());
             x = 0;
 
             //solutionPeople->printPeople();

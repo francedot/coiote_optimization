@@ -4,6 +4,7 @@
 
 #include "Dummy.hpp"
 #include "Problem.hpp"
+#include <ctime>
 //#include "Exceptions/Headers/CoioteException.hpp"
 
 using namespace std;
@@ -33,6 +34,8 @@ Problem::Problem(string inputPath, string outputPath) {
  * load the attributes for the problem reading the input file
  */
 void Problem::load() {
+    time_t begin, end;
+    time(&begin);
     string line;    // contains a line of the Input file
     string word;    // contains a single word (into a line)
     int m;          // index for peopleTypes
@@ -117,7 +120,8 @@ void Problem::load() {
         cout << "Error: unable to load cost matrix\n";
         return;
     }
-
+    time(&end);
+    cout << "Problem.load() took " << difftime(end, begin) << " seconds.\n" << endl;
     return;
 }
 
@@ -127,7 +131,6 @@ void Problem::load() {
 void Problem::printInputFileRead () {
     ofstream outputFileStream("/home/riccardo/ClionProjects/coiote_optimization/Resources/Output/test.txt");
     int m, i, j, t, ****costMatrix, ***peopleMatrix;
-
     outputFileStream << cellsNumber << " " << timePeriods << " " << peopleTypes << "\n\n";
 
     for (m = 0; m < peopleTypes; m++) {
@@ -198,6 +201,8 @@ void Problem::dummyLoad() {
  * Parameters meaning explained in-line
  */
 int Problem::solve(int populationDimension, int eliteDimension) {
+    time_t begin, end;
+    time(&begin);
     cout << "solve() called, attempting to solve the problem\n";
 
     Solution *initialSolution = new Solution(people);
@@ -233,11 +238,22 @@ int Problem::solve(int populationDimension, int eliteDimension) {
     //end of first wave, the elite contains the best solutions up to now
     //successive waves, the cycle is stopped when the best solution has not been updated for "maxStableWaves" consecutive waves
     int wave = 0;
+    bool alreadyPrinted = false;
     while (stableWaves < maxStableWaves) {
         cout << "Current elite:" << endl;
         for (int j = 0; j < eliteDimension; j++)
             cout << eliteIndexes[j] << " | ";
         cout << endl;
+        if (!alreadyPrinted) {
+            time(&end);
+            double elap = difftime(end, begin);
+            cout << "Problem.solve(): time elapsed:" << elap << " seconds." << endl;
+            if (elap >= 5.0) {
+                alreadyPrinted = true;
+                cout << "==============================\nThis is the solution found after " << elap << " seconds: "
+                     << this->getBestSolution()->evaluate() << "\n==============================" << endl;
+            }
+        }
         for (int i = 0; i < populationDimension; i++) {
             flag = false;
             for (int j = 0; j < eliteDimension; j++)
