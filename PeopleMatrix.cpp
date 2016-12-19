@@ -2,6 +2,7 @@
 // Created by Gabriele Mosca on 30/11/16.
 //
 
+#include <cstdlib>
 #include "PeopleMatrix.hpp"
 
 /*

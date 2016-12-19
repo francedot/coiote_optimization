@@ -89,7 +89,8 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
                           toAdd->getX());
             remainingTask[toAdd->getJ()] -= ((toAdd->getType() + 1) * toAdd->getX());
             if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
-            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
+//            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
+            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), toAdd->getX());
             addSolutionCell(toAdd);
         }
         /*

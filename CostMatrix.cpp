@@ -2,6 +2,7 @@
  * CostMatrix.cpp
  */
 
+#include <cstdlib>
 #include "CostMatrix.hpp"
 #include "util.hpp"
 #include <math.h>
