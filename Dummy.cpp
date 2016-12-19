@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "Dummy.hpp"
 
+// NEW LINE ADDED TO CHECK BRANCH FUNCTIONALITY
+
 /*
  * This static method fills the cost matrix with random numbers proportional to the distance between the cells
  * and the person types and updates the average cost per task for each cell.
