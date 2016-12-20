@@ -201,6 +201,8 @@ void Problem::dummyLoad() {
  * Parameters meaning explained in-line
  */
 int Problem::solve(int populationDimension, int eliteDimension) {
+//    srand(time(0));
+
     time_t begin, end;
     time(&begin);
     cout << "solve() called, attempting to solve the problem\n";

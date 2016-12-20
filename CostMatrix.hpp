@@ -40,6 +40,9 @@ public:
     CostCoordinates *
     getMinimumCost(int j, PeopleMatrix *people, int *remainingtasks, int cellsNumber, int peopleTypes, int timePeriods);
 
+    CostCoordinates *getMinimumTaskCostByDistance(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
+                                                  int cellsNumber, int peopleTypes, int timePeriods);
+
     CostCoordinates *
     getMinimumCostByDistanceFromJ(int j, PeopleMatrix *people, int *remainingtasks, int cellsNumber, int peopleTypes,
                                   int timePeriods);
