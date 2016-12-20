@@ -97,7 +97,7 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
             }
         }
         bestSolutions->clear();
-        delete bestSolutions;
+        // delete bestSolutions;
         /*
         double keptCellProbability = ((double) keptSolCells / (double) initialSolution->cells.size());
         int kept = 0;

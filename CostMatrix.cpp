@@ -63,7 +63,7 @@ int CostMatrix::load(ifstream *inputFileStream) {
             }
         }
     }
-    /*for (int k = 0; k < 30; k++) {
+    for (int k = 0; k < 30; k++) {
         *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index[k]); // Aggiorna std_dev
         cout << "Media per task: "<<k << " ->" << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k)<<endl;
     }
@@ -79,7 +79,7 @@ int CostMatrix::load(ifstream *inputFileStream) {
             cout << costs[j][i][2][0] << ", ";
         }
         cout << "\n";
-    }*/
+    }
     return 1;
 }
 
@@ -344,6 +344,8 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
     int startingI, endingI;
     bool directionRight;
     int maxLengthOfScan = cellsNumber;
+    bool ALLOW_TASKS_WASTE = false; // Seems to help with big instances when set to false
+    bool useless; //Modifica per git versioning di gabriele.
     /*
      * OSS: Non è detto che aumentando maxLengthOfScan ed altri parametri
      *      che migliorano la ricerca locale si peggiori il tempo. L'algoritmo
@@ -375,19 +377,29 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
         //if(total_entries < 100) cout << directionRight << " " << startingI << " " << endingI << " " << maxLengthOfScan << endl;
         while (scanIndex <= maxLengthOfScan) {
             if (directionRight) {
-                curI = startingI + scanIndex;
+//                curI = startingI + scanIndex;
+                curI = 0 + scanIndex;
                 endArray = (curI <= endingI);
             } else {
-                curI = startingI - scanIndex;
+//                curI = startingI - scanIndex;
+                curI = cellsNumber - 1 - scanIndex;
                 endArray = (curI >= endingI);
             }
             //cout << endArray << endl;
             if (endArray) {
                 for (int l = 0; l < peopleTypes; l++) {
-                    double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
+//                    double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
                     // if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
-                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
-                          solutionPeople->getPeople(startTime, l, curI) == 0)) {
+//                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
+                    int curRemTasks;
+                    if (!((curI == j) || ((curRemTasks = remainingtasks[j]) == 0) ||
+                          (solutionPeople->getPeople(startTime, l, curI) == 0))) {
+                        double costPerTask;
+                        if (ALLOW_TASKS_WASTE) { // calculates cost ignoring that remTasks are less than max for that type
+                            costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
+                        } else { // calculates the cost based on how many remTasks are "doable"
+                            costPerTask = ((double) costs[j][curI][l][startTime]) / min(curRemTasks, (l + 1));
+                        }
                         //if(total_entries < 100) cout << "Entered" << endl;
                         if (costPerTask <= minForType[l]) {
                             minForType[l] = costPerTask;
@@ -414,6 +426,7 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
     //if(total_entries < 100)
     //cout << "Entry: " << total_entries << " Min: " << curMinValue << " i:" << c->i << " j:" << c->j << "  m: " << c->m <<" t:"<<c->t<< endl;
     if (flag) {
+        cout << "MISS!!!\n";
         //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
         //vengono restituite le prime cordinate valide disponibili
         // Antonio: ci sono pochissime probabilità di entrare in questo ciclo, ma va tenuto per sicurezza
@@ -437,43 +450,6 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
     }
     return c;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
  * It sets the value of the cost matrix corrisponding to cell "i" "j", person type "m", time period "t".

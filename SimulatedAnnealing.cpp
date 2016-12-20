@@ -71,7 +71,7 @@ SimulatedAnnealing::run(double keptSolCellsPercentage, int *tasks, int sizeOfTas
     //std::cout << "run(...) called" << std::endl;
     for (int step = 0; step < steps; step++) {
         runStep(keptSolCellsPercentage, tasks, sizeOfTasks, people, costs, N);
-        currentTemperature *= 0.9;
+        currentTemperature *= 0.95;
     }
 }
 
@@ -85,7 +85,7 @@ SimulatedAnnealing::runStep(double keptSolCellsPercentage, int *tasks, int sizeO
                             int N) {
     //std::cout << "runStep(...) called" << endl;
     Solution *newSol;
-    for (int instance = 0; instance < 10; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
+    for (int instance = 0; instance < 20; instance++) { // TODO L = 20 (L ha lo stesso significato che nel libro)
         newSol = currentSolution->generateNeighbor(keptSolCellsPercentage, tasks, sizeOfTasks, people, costs, N);
 
         int difference = newSol->evaluate() - currentSolution->evaluate();
