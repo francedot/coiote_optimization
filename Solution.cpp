@@ -84,15 +84,20 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
         vector<SolutionCell> *bestSolutions = getBestKSolutions(initialSolution, keptSolCellsPercentage, costs);
         vector<SolutionCell>::iterator it;
         for (it = bestSolutions->begin(); it != bestSolutions->end(); it++) {
-            SolutionCell *toAdd = new SolutionCell(*it);
-            totalCost += (costs->getCost(toAdd->getJ(), toAdd->getI(), toAdd->getType(), toAdd->getTime()) *
-                          toAdd->getX());
-            remainingTask[toAdd->getJ()] -= ((toAdd->getType() + 1) * toAdd->getX());
-            if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
+            bool isReallyKept = (rand() <= 0.7 * RAND_MAX);
+            if (isReallyKept) {
+                SolutionCell *toAdd = new SolutionCell(*it);
+                totalCost += (costs->getCost(toAdd->getJ(), toAdd->getI(), toAdd->getType(), toAdd->getTime()) *
+                              toAdd->getX());
+                remainingTask[toAdd->getJ()] -= ((toAdd->getType() + 1) * toAdd->getX());
+                if (remainingTask[toAdd->getJ()] < 0) remainingTask[toAdd->getJ()] = 0;
 //            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), 1);
-            solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), toAdd->getX());
-            addSolutionCell(toAdd);
+                solutionPeople->decrementPeople(toAdd->getTime(), toAdd->getType(), toAdd->getI(), toAdd->getX());
+                addSolutionCell(toAdd);
+            }
         }
+        bestSolutions->clear();
+        delete bestSolutions;
         /*
         double keptCellProbability = ((double) keptSolCells / (double) initialSolution->cells.size());
         int kept = 0;
@@ -130,6 +135,10 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
             CostMatrix::CostCoordinates *c = costs->getMinimumCostByDistanceFromJ(j, solutionPeople, remainingTask, N,
                                                                                   solutionPeople->getPeopleTypes(),
                                                                                   solutionPeople->getTimePeriods());
+//            CostMatrix::CostCoordinates *c = costs->getMinimumTaskCostByDistance(j, solutionPeople, remainingTask, N,
+//                                                                                  solutionPeople->getPeopleTypes(),
+//                                                                                  solutionPeople->getTimePeriods());
+//            cout << "CostCoords: i=" << c->i << " j=" << c->j << " m=" << c->m << " t=" << c->t << "\n";
             x = 0;
 
             //solutionPeople->printPeople();
@@ -146,6 +155,7 @@ void Solution::populateSolution(Solution *initialSolution, double keptSolCellsPe
                 addSolutionCell(new SolutionCell(c->i, c->j, c->m, c->t, x));
             }
             //printTasks(remainingTask, N);
+            delete c;
         }
     }
 

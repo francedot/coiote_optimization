@@ -44,7 +44,9 @@ int CostMatrix::load(ifstream *inputFileStream) {
     int t;          // index for timePeriods
 
     int cost;    // for using updateAvgCostsPerTask
-    long index = 0;
+    long index[cellsNumber];
+    for (int i = 0; i < cellsNumber; i++)
+        index[i] = 0;
     for (m = 0; m < peopleTypes; m++) {
         for (t = 0; t < timePeriods; t++) {
             // jump line with m and t indexes
@@ -56,14 +58,14 @@ int CostMatrix::load(ifstream *inputFileStream) {
                 for (int j = 0; j < cellsNumber; j++) {
                     inputStringStream >> word;
                     cost = costs[j][i][m][t] = atoi(word.c_str());
-                    index++;
-                    this->updateAvgCostsPerTask(j, ((double) cost) / (m + 1), index);
+                    index[j]++;
+                    this->updateAvgCostsPerTask(j, ((double) cost) / (m + 1), index[j]);
                 }
             }
         }
     }
     for (int k = 0; k < 3; k++) {
-        *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index); // Aggiorna std_dev
+        *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index[k]); // Aggiorna std_dev
         cout << "Media per task: " << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k) << endl;
     }
     /*for (int m = 0; m < peopleTypes; m++) {
@@ -318,6 +320,68 @@ CostMatrix::CostCoordinates *CostMatrix::getMinimumCost(int j, PeopleMatrix *sol
     return c;
 }
 
+// TODO: invece di dare i primi validi se non si trovano elementi che soddisfino la media, prova ad aumentare k!
+// OSS: profiling mostra che la maggior parte del tempo ( a volte 50%)nt viene passata in questa funzione, e nei casi in cui ci sono
+//      gli optimality gap più alti il rapporto failed/total (cfr sotto) è altissimo, per cui ha senso cercare di
+//      velocizzare e rendere migliore questa funzione.
+CostMatrix::CostCoordinates *
+CostMatrix::getMinimumTaskCostByDistance(int j, PeopleMatrix *solutionPeople, int *remainingtasks,
+                                         int cellsNumber, int peopleTypes, int timePeriods) {
+//    cout << "Entering getCost... \n";
+    double avgFactor = 0.01;
+
+    int startT = rand() % timePeriods;
+    int startM = rand() % peopleTypes;
+
+    bool restartedT = false, restartedM = false;
+
+    int tempCost = 0, minFeasibleFoundCost = 100000000;
+
+    CostCoordinates *currentCoordinates = new CostCoordinates();
+
+    for (int i_ = j + 1; i_ != j; (i_ = (i_ >= cellsNumber) ? 0 : i_ + 1)) {
+        if (i_ == cellsNumber) {
+            continue;
+        }
+        for (int t_ = startT; (!restartedT || t_ != startT);) {
+            for (int m_ = startM; (!restartedM || m_ != startM);) {
+                if (solutionPeople->getPeople(t_, m_, i_) > 0) {
+                    tempCost = (int) (((double) this->costs[j][i_][m_][t_]) / (m_ + 1));
+                    if (tempCost <= (avgFactor * averageCostsPerTask[j])) {
+                        currentCoordinates->j = j;
+                        currentCoordinates->i = i_;
+                        currentCoordinates->m = m_;
+                        currentCoordinates->t = t_;
+                        return currentCoordinates;
+                    }
+                    /* Now, updates the minimum feasible coordinates found */
+                    if (tempCost < minFeasibleFoundCost) {
+                        minFeasibleFoundCost = tempCost;
+                        currentCoordinates->j = j;
+                        currentCoordinates->i = i_;
+                        currentCoordinates->m = m_;
+                        currentCoordinates->t = t_;
+                    }
+                }
+                m_++;
+                if (m_ == peopleTypes) {
+                    m_ = 0;
+                    restartedM = true;
+                }
+            }
+            restartedM = false;
+            t_++;
+            if (t_ == timePeriods) {
+                t_ = 0;
+                restartedT = true;
+            }
+        }
+        restartedT = false;
+    }
+    return currentCoordinates;
+}
+
+
 int min(int a, int b) {
     if (a < b)
         return a;
@@ -374,10 +438,12 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
         //if(total_entries < 100) cout << directionRight << " " << startingI << " " << endingI << " " << maxLengthOfScan << endl;
         while (scanIndex <= maxLengthOfScan) {
             if (directionRight) {
-                curI = startingI + scanIndex;
+//                curI = startingI + scanIndex;
+                curI = 0 + scanIndex;
                 endArray = (curI <= endingI);
             } else {
-                curI = startingI - scanIndex;
+//                curI = startingI - scanIndex;
+                curI = cellsNumber - 1 - scanIndex;
                 endArray = (curI >= endingI);
             }
             //cout << endArray << endl;
@@ -385,7 +451,8 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
                 for (int l = 0; l < peopleTypes; l++) {
                     double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
                     // if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
-                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
+//                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
+                    if (!((curI == j) || (remainingtasks[j] == 0) ||
                           solutionPeople->getPeople(startTime, l, curI) == 0)) {
                         //if(total_entries < 100) cout << "Entered" << endl;
                         if (costPerTask <= minForType[l]) {
@@ -413,6 +480,7 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
     //if(total_entries < 100)
     //cout << "Entry: " << total_entries << " Min: " << curMinValue << " i:" << c->i << " j:" << c->j << "  m: " << c->m <<" t:"<<c->t<< endl;
     if (flag) {
+        cout << "MISS!!!\n";
         //se il ciclo precedente fallisce perchè non vi sono più celle che permettano un costo inferiore alla media
         //vengono restituite le prime cordinate valide disponibili
         // Antonio: ci sono pochissime probabilità di entrare in questo ciclo, ma va tenuto per sicurezza
