@@ -43,41 +43,43 @@ int CostMatrix::load(ifstream *inputFileStream) {
     int t;          // index for timePeriods
 
     int cost;    // for using updateAvgCostsPerTask
-    long index = 0;
+    long index[cellsNumber];
+    for (int i = 0; i < cellsNumber; i++) {
+        index[i] = 0;
+    }
     for (m = 0; m < peopleTypes; m++) {
         for (t = 0; t < timePeriods; t++) {
             // jump line with m and t indexes
             getline(*inputFileStream, line);
-
             for (int i = 0; i < cellsNumber; i++) {
                 getline(*inputFileStream, line);
                 istringstream inputStringStream(line);
                 for (int j = 0; j < cellsNumber; j++) {
                     inputStringStream >> word;
                     cost = costs[j][i][m][t] = atoi(word.c_str());
-                    index++;
-                    this->updateAvgCostsPerTask(j, ((double) cost) / (m + 1), index);
+                    index[j]++;
+                    this->updateAvgCostsPerTask(j, ((double) cost) / (m + 1), index[j]);
                 }
             }
         }
     }
-    for (int k = 0; k < 3; k++) {
-        *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index); // Aggiorna std_dev
-        cout << "Media per task: " << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k) << endl;
+    /*for (int k = 0; k < 30; k++) {
+        *(stdvCostsPerTask + k) = sqrt(*(stdvCostsPerTask + k) / index[k]); // Aggiorna std_dev
+        cout << "Media per task: "<<k << " ->" << *(averageCostsPerTask + k) << " DevStd: " << *(stdvCostsPerTask + k)<<endl;
     }
-    /*for (int m = 0; m < peopleTypes; m++) {
-        cout << "Type: " << m + 1 << "\n" << endl;
-        for (int t = 0; t < timePeriods; t++) {
-            cout << "At time: " << t << "\n" << endl;
-            for (int j = 0; j < cellsNumber; j++) {
-                for (int i = 0; i < cellsNumber; i++) {
-                    cout << costs[j][i][m][t] << ", ";
-                }
-                cout << "\n" << endl;
-            }
+    for(int j = 0; j < 1; j++){
+        cout << "j:" << j << " ->";
+        for(int i = 0; i < cellsNumber; i++) {
+            cout << costs[j][i][0][0] << ", ";
+        }cout << endl;
+        for(int i = 0; i < cellsNumber; i++) {
+            cout << costs[j][i][1][0] << ", ";
+        }cout << endl;
+        for(int i = 0; i < cellsNumber; i++) {
+            cout << costs[j][i][2][0] << ", ";
         }
+        cout << "\n";
     }*/
-
     return 1;
 }
 
