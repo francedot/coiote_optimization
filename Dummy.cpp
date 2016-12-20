@@ -6,6 +6,7 @@
 #include "Dummy.hpp"
 
 // NEW LINE ADDED TO CHECK BRANCH FUNCTIONALITY
+// NEW LINE ADDED
 
 /*
  * This static method fills the cost matrix with random numbers proportional to the distance between the cells
