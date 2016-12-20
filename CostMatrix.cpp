@@ -407,6 +407,7 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
     int startingI, endingI;
     bool directionRight;
     int maxLengthOfScan = cellsNumber;
+    bool ALLOW_TASKS_WASTE = false; // Seems to help with big instances when set to false
     /*
      * OSS: Non è detto che aumentando maxLengthOfScan ed altri parametri
      *      che migliorano la ricerca locale si peggiori il tempo. L'algoritmo
@@ -449,11 +450,18 @@ CostMatrix::getMinimumCostByDistanceFromJ(int j, PeopleMatrix *solutionPeople, i
             //cout << endArray << endl;
             if (endArray) {
                 for (int l = 0; l < peopleTypes; l++) {
-                    double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
+//                    double costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
                     // if(total_entries < 100) cout << "CostPerTask: " << costPerTask << endl;
 //                    if (!((curI == j) || (costPerTask > averageCostsPerTask[j]) || (remainingtasks[j] == 0) ||
-                    if (!((curI == j) || (remainingtasks[j] == 0) ||
-                          solutionPeople->getPeople(startTime, l, curI) == 0)) {
+                    int curRemTasks;
+                    if (!((curI == j) || ((curRemTasks = remainingtasks[j]) == 0) ||
+                          (solutionPeople->getPeople(startTime, l, curI) == 0))) {
+                        double costPerTask;
+                        if (ALLOW_TASKS_WASTE) { // calculates cost ignoring that remTasks are less than max for that type
+                            costPerTask = ((double) costs[j][curI][l][startTime]) / (l + 1);
+                        } else { // calculates the cost based on how many remTasks are "doable"
+                            costPerTask = ((double) costs[j][curI][l][startTime]) / min(curRemTasks, (l + 1));
+                        }
                         //if(total_entries < 100) cout << "Entered" << endl;
                         if (costPerTask <= minForType[l]) {
                             minForType[l] = costPerTask;
